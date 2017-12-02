@@ -55,13 +55,14 @@ var mainState = {
         this.dogAppeared = false;
         this.dogCounter = 0;
         this.score = 0;
+        this.anger = 0; // to calculate om 7amada anger!
 
 
         game.scale.fullScreenScaleMode = Phaser.ScaleManager.EXACT_FIT;
         game.scale.startFullScreen(false);
         //Set Background and Center Game
         game.stage.backgroundColor = '#FFFFFF';
-        
+
         //game.world.setBounds(0, 0, 3840, 1080);
         game.scale.pageAlignHorizontally = true;
         game.scale.pageAlignVertically = true;
@@ -119,6 +120,13 @@ var mainState = {
             fontSize: '32px',
             fill: '#000'
         });
+
+        //create anger 
+        this.angerText = game.add.text(500, 16, 'Anger: 0', {
+            fontSize: '32px',
+            fill: '#000'
+        });
+
         this.soundTrack = game.add.audio('soundtrack');
         this.dogBarking = game.add.audio('dogbarking');
         game.sound.setDecodedCallback([this.soundTrack, this.dogBarking], this.StartSound, this);
@@ -126,9 +134,9 @@ var mainState = {
 
     update: function () {
 
-        let random = Math.floor(Math.random() * 1) + 1;                  //need to modify
+        let random = Math.floor(Math.random() * 1) + 1; //need to modify
         if (random == 1) {
-            rand = Math.ceil(Math.random() * 1750)+500;             // random number for coin boundries solved here
+            rand = Math.ceil(Math.random() * 1750) + 500; // random number for coin boundries solved here
             this.coinGroup.create(rand, 0, 'coin', 0);
             this.coinGroup.children[this.coinGroup.children.length - 1].anchor.setTo(0.5, 0.5);
         }
@@ -139,8 +147,8 @@ var mainState = {
     StartSound: function () {
         this.soundTrack.loopFull();
     },
-    movePlayer: function () {
 
+    movePlayer: function () {
         this.player.x = game.input.mousePointer.x;
         game.physics.arcade.collide(this.player, this.coin);
         if (this.player.body.blocked.left)
@@ -151,21 +159,35 @@ var mainState = {
             this.dogAppeared = true;
             this.dog.scale.setTo(0.5, 0.5);
             this.dogBarking.play();
+            this.anger += 1;
+            this.angerText.text = 'Anger: ' + this.anger;
         }
+
         if (this.player.body.x < 230 && this.player.body.x > 210 && this.dogCounter == 0) {
             this.dog.x = 150;
             this.dogAppeared = true;
             this.dog.scale.setTo(-0.5, 0.5);
             this.dogBarking.play();
+            this.anger += 1;
+            this.angerText.text = 'Anger: ' + this.anger;
         }
+
         if (this.dogAppeared) {
+            //check anger condition!!
+            if (this.anger === 5) {
+                alert("y5aybak ya 7amada !");
+            }
+
             this.dogCounter++;
             if (this.dogCounter == 120) {
                 this.dog.x = -150;
                 this.dogCounter = 0;
                 this.dogAppeared = false;
+
             }
         }
+
+
     },
 
     moveCoin: function () {
@@ -198,7 +220,7 @@ var videoState = {
         testVideo.loop = false;
         timer = game.time.create();
         // Create a delayed event 1m and 30s from now
-        timerEvent = timer.add(Phaser.Timer.MINUTE * 0 + Phaser.Timer.SECOND * 1, this.endTimer, this); 
+        timerEvent = timer.add(Phaser.Timer.MINUTE * 0 + Phaser.Timer.SECOND * 1, this.endTimer, this);
         // Start the timer
         timer.start();
     },
