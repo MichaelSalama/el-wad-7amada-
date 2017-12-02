@@ -1,4 +1,5 @@
-var mainMenuState={
+//main menu for play button etc..
+var mainMenuState={                     
     preload:function(){
         game.load.image('player', 'assets/player.png');
         game.load.image('coin', 'assets/coin.png');
@@ -10,15 +11,18 @@ var mainMenuState={
         game.load.image('aqua','assets/aqua.png');
 
     },
+    
     create:function()
     {
         this.createButton(game,"Play",game.world.centerX,game.world.centerY+32,300,100,function(){this.state.start('video')});
 
     },
+
     update:function()
     {
 
-    },      
+    },    
+
     createButton:function(game,string,x,y,w,h,callback){    
         var button1=game.add.button(x,y,'aqua',callback,this,2,1,0);
         button1.anchor.setTo(0.5,0.5);
@@ -30,6 +34,8 @@ var mainMenuState={
 
     }
 }
+
+// main state for game itself
 var mainState={
 
     //jumpSpeed = 1200;
@@ -188,6 +194,8 @@ var mainState={
 
     },
 };
+
+// state for video 
 var videoState={
     preload:function(){},
     create:function(){
@@ -200,13 +208,11 @@ var videoState={
         timerEvent = timer.add(Phaser.Timer.MINUTE * 0 + Phaser.Timer.SECOND * 30, this.endTimer, this);
         // Start the timer
         timer.start();
-
-
     },
+
     endTimer:function(){
         timer.stop();
         this.state.start('main');
-
     }
 
 }
