@@ -39,12 +39,28 @@ var mainMenuState = {
 
     }
 }
-
+//var progress;
 // main state for game itself
 var mainState = {
 
     preload: function () {
         //game.load.image('background', 'assets/Parallex.jpeg');
+
+        //this.preloadBar = game.add.graphics(0, 0);
+        //this.preloadBar.lineStyle(3, '0xffffff', 1);
+        //this.preloadBar.moveTo(0, 0);
+        //this.preloadBar.lineTo(game.width, 0);
+        //this.preloadBar.scale.x = 0;
+        // set the bar to the beginning position}function loadUpdate() { 
+        // every frame during loading, set the scale.x of the bar to the progress (an integer between 0  
+        // and 100) divided by 100 to give a float between 0 and 1  this.preloadBar.scale.x = game.load.progress * 0.
+
+        this.progress = game.add.graphics(0, 0);
+        this.progress.lineStyle(2, '0x000000');
+        this.progress.beginFill('0x000000', 100);
+        this.progress.drawRoundedRect(10, 50, 300, 27, 10);
+        this.progress.endFill(150);
+        this.progress.beginFill('0x999999', 1); //For drawing progress
     },
 
     create: function () {
@@ -133,13 +149,26 @@ var mainState = {
     },
 
     update: function () {
-
+        //        this.liveimg=this.coinGroup.children.filter(function(e) {  return e.alive});
+        this.progress.clear();
+        this.progress = game.add.graphics(0, 0);
+        this.progress.lineStyle(2, '0x000000');
+        this.progress.beginFill('0x000000', 100);
+        this.progress.drawRoundedRect(10, 50, 300, 27, 10);
+        this.progress.endFill(150);
+        this.progress.beginFill('0x999999', 1); //For drawing progress
+        // the original image width in pixels
+        // then on updateprogress.width = percentDone*progress.initialWidth;
+        // percentDone should be in decimals 20% = 0.2
+        // so this will finaly result in 1 * 300 = 100%
+        this.progress.drawRoundedRect(11, 51, this.score * 0.2, 25, 10);
         let random = Math.floor(Math.random() * 1) + 1; //need to modify
         if (random == 1) {
             rand = Math.ceil(Math.random() * 1750) + 500; // random number for coin boundries solved here
             this.coinGroup.create(rand, 0, 'coin', 0);
             this.coinGroup.children[this.coinGroup.children.length - 1].anchor.setTo(0.5, 0.5);
         }
+        //console.log(this.coinGroup.children.filter(function(e) {  return e.alive})); // this is to count live "unkilled" children
 
         this.movePlayer();
         this.moveCoin();
