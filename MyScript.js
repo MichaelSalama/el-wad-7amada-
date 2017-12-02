@@ -128,7 +128,7 @@ var mainState = {
 
         let random = Math.floor(Math.random() * 1) + 1;                  //need to modify
         if (random == 1) {
-            rand = Math.ceil(Math.random() * 1200-100)+600;             //need to modify
+            rand = Math.ceil(Math.random() * 1750)+500;             // random number for coin boundries solved here
             this.coinGroup.create(rand, 0, 'coin', 0);
             this.coinGroup.children[this.coinGroup.children.length - 1].anchor.setTo(0.5, 0.5);
         }
