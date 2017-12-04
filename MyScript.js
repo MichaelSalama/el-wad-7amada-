@@ -168,7 +168,7 @@ var mainState = {
         this.progress.beginFill('0x000000', 100);
         this.progress.drawRoundedRect(10, 50, 300, 27, 10);
         this.progress.endFill();
-<<<<<<< HEAD
+//<<<<<<< HEAD
         if (this.liveimg < 100)
             this.progress.beginFill('0x07E507', 1);
         if (this.liveimg < 200 && this.liveimg > 100)
@@ -182,13 +182,13 @@ var mainState = {
         this.progress.drawRoundedRect(11, 51, this.liveimg, 25, 10);
         let random = Math.floor(Math.random() * 10) + 1; //need to modify
         if (random == 5) {
-=======
+//=======
         this.progress.beginFill('0x999999', 1); //For drawing progress
         // the original image width in pixels
         // then on updateprogress.width = percentDone*progress.initialWidth;
         // percentDone should be in decimals 20% = 0.2
         // so this will finaly result in 1 * 300 = 100%
-<<<<<<< .merge_file_a04832
+//  <<<<<<< //.merge_file_a04832
         /*
         this.progress.drawRoundedRect(11, 51, this.score * 0.2, 25, 10);
         let random = Math.floor(Math.random() * 100) + 1; //need to modify
@@ -213,8 +213,10 @@ var mainState = {
         }
         */
         //console.log(this.coinGroup.children.filter(function(e) {  return e.alive})); // this is to count live "unkilled" children
->>>>>>> 0d2b907b2516ccd7193648e657a0903143e5af8d
+//>>>>>>> 0d2b907b2516ccd7193648e657a0903143e5af8d
 
+        
+        }
         this.movePlayer();
         this.moveCoin();
     },
