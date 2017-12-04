@@ -204,7 +204,7 @@ var mainState = {
         if (this.dogAppeared) {
             //check anger condition!!
             if (this.anger === 5) {
-               this.state.start('end');
+                this.state.start('end');
             }
 
             this.dogCounter++;
@@ -261,16 +261,23 @@ var videoState = {
 }
 
 var endMenuState = {
-    preload: function () {},
+    preload: function () {
+    },
 
     create: function () {
-        this.createButton(game, "Replay", game.world.centerX , game.world.centerY / 2 + 32, 300, 100, function () {
+        //create end statment
+        this.endStatement = game.add.text(500, 150, 'Y5aybak ya 7amada!', {
+            fontFamily: 'Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif',
+            fontSize: '32px',
+            fill: '#000'
+        });
+
+        this.createButton(game, "Replay", game.world.centerX, game.world.centerY+ 32, 300, 100, function () {
             //this.state.start('video');
             this.state.start('main');
         });
 
     },
-
 
     createButton: function (game, string, x, y, w, h, callback) {
         var button1 = game.add.button(x, y, 'aqua', callback, this, 2, 1, 0);
@@ -285,7 +292,8 @@ var endMenuState = {
         });
         txt.anchor.setTo(0.5, 0.5);
 
-    }
+    },
+
 }
 
 var game = new Phaser.Game(1360, 720, Phaser.AUTO, '', );
