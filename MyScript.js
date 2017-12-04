@@ -65,6 +65,7 @@ var mainState = {
 
     create: function () {
 
+        this.angerCounter=0;
         this.speed = 700;
         var rand;
         var coinGroup;
@@ -103,16 +104,25 @@ var mainState = {
         //this.player.body.immovable = true;             //hat2sr 3 el 7arka?
 
         //coin group
-        rand = Math.floor(Math.random() * 901) + 300;
+        // changed coin group instead of random generating an endless array 
+        // i made a group of 10 elements that loop
         this.coinGroup = game.add.group();
         this.coinGroup.physicsEnabled = true
         this.coinGroup.enableBody = true;
         this.coinGroup.physicsBodyType = Phaser.Physics.ARCADE;
         this.coinGroup.scale.set(0.5, 0.5);
-        this.coinGroup.create(rand, 0, 'coin', 0);
+        for(var i=0;i<10;i++)
+        {
+            rand = Math.ceil(Math.random() * 1750) + 500;
+            this.coinGroup.create(rand, 0, 'coin', 0);
+            this.coinGroup.children[i].anchor.setTo(0.5, 0.5);
+            this.speed = Math.ceil(Math.random() * 350) + 200;
+            this.coinGroup.children[i].body.velocity.y = this.speed;
+        }
+
         //coinGroup.children[0].body.collideWorldBounds=false;
         //coinGroup.children[0].scale.setTo(0.5,0.5);
-        this.coinGroup.children[0].anchor.setTo(0.5, 0.5);
+
 
         //create coin
         /*
@@ -161,13 +171,15 @@ var mainState = {
         // then on updateprogress.width = percentDone*progress.initialWidth;
         // percentDone should be in decimals 20% = 0.2
         // so this will finaly result in 1 * 300 = 100%
+        /*
         this.progress.drawRoundedRect(11, 51, this.score * 0.2, 25, 10);
-        let random = Math.floor(Math.random() * 1) + 1; //need to modify
+        let random = Math.floor(Math.random() * 100) + 1; //need to modify
         if (random == 1) {
-            rand = Math.ceil(Math.random() * 1750) + 500; // random number for coin boundries solved here
+             // random number for coin boundries solved here
             this.coinGroup.create(rand, 0, 'coin', 0);
             this.coinGroup.children[this.coinGroup.children.length - 1].anchor.setTo(0.5, 0.5);
         }
+        */
         //console.log(this.coinGroup.children.filter(function(e) {  return e.alive})); // this is to count live "unkilled" children
 
         this.movePlayer();
@@ -222,15 +234,37 @@ var mainState = {
     moveCoin: function () {
 
         for (var i = 0, len = this.coinGroup.children.length; i < len; i++) {
-            this.coinGroup.children[i].body.velocity.y = this.speed;
 
-
+            
+            //changed some stuff here so that if a coin has collided with hamada or reached bottom
+            //it reappears on the top and it's speed is random generated
             if (game.physics.arcade.overlap(this.player, this.coinGroup.children[i])) {
-                this.coinGroup.children[i].kill();
+
+                //this.coinGroup.children[i].kill();
                 this.score += 1;
                 this.scoreText.text = 'Score: ' + this.score;
                 this.coinGroup.children[i].body.touching.down = false;
+                rand = Math.ceil(Math.random() * 1750) + 500;
+                this.coinGroup.children[i].x=rand;
+                this.coinGroup.children[i].y=0;
+                this.speed = Math.ceil(Math.random() *350) + 200;
+                this.coinGroup.children[i].body.velocity.y = this.speed;
+
+
             }
+            if(this.coinGroup.children[i].body.y>700)
+            {
+                //  this.coinGroup.children[i].kill();
+                this.angerCounter+=1;
+                rand = Math.ceil(Math.random() * 1750) + 500;
+                this.coinGroup.children[i].x=rand;
+                this.coinGroup.children[i].y=0;
+                this.speed = Math.ceil(Math.random() *350) + 200;
+                this.coinGroup.children[i].body.velocity.y = this.speed;
+
+            }
+           
+
         }
 
     },
