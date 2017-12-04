@@ -158,6 +158,7 @@ var mainState = {
         this.progress.beginFill('0x000000', 100);
         this.progress.drawRoundedRect(10, 50, 300, 27, 10);
         this.progress.endFill();
+<<<<<<< HEAD
         if (this.liveimg < 100)
             this.progress.beginFill('0x07E507', 1);
         if (this.liveimg < 200 && this.liveimg > 100)
@@ -171,6 +172,16 @@ var mainState = {
         this.progress.drawRoundedRect(11, 51, this.liveimg, 25, 10);
         let random = Math.floor(Math.random() * 10) + 1; //need to modify
         if (random == 5) {
+=======
+        this.progress.beginFill('0x999999', 1); //For drawing progress
+        // the original image width in pixels
+        // then on updateprogress.width = percentDone*progress.initialWidth;
+        // percentDone should be in decimals 20% = 0.2
+        // so this will finaly result in 1 * 300 = 100%
+        this.progress.drawRoundedRect(11, 51, this.score, 25, 10);
+        let random = Math.floor(Math.random() * 1) + 1; //need to modify
+        if (random == 1) {
+>>>>>>> 74941cafbd321252e7c36566cfb96c1536f8b979
             rand = Math.ceil(Math.random() * 1750) + 500; // random number for coin boundries solved here
             this.coinGroup.create(rand, 0, 'coin', 0);
             this.coinGroup.children[this.coinGroup.children.length - 1].anchor.setTo(0.5, 0.5);
@@ -213,7 +224,7 @@ var mainState = {
         if (this.dogAppeared) {
             //check anger condition!!
             if (this.anger === 5) {
-                alert("y5aybak ya 7amada !");
+               this.state.start('end');
             }
 
             this.dogCounter++;
@@ -267,10 +278,39 @@ var videoState = {
         timer.stop();
         this.state.start('main');
     }
-
 }
+
+var endMenuState = {
+    preload: function () {},
+
+    create: function () {
+        this.createButton(game, "Replay", game.world.centerX , game.world.centerY / 2 + 32, 300, 100, function () {
+            //this.state.start('video');
+            this.state.start('main');
+        });
+
+    },
+
+
+    createButton: function (game, string, x, y, w, h, callback) {
+        var button1 = game.add.button(x, y, 'aqua', callback, this, 2, 1, 0);
+        button1.anchor.setTo(0.5, 0.5);
+        button1.width = w;
+        button1.height = h;
+
+        var txt = game.add.text(button1.x, button1.y, string, {
+            font: "14px arial",
+            fill: "#fff",
+            align: "center"
+        });
+        txt.anchor.setTo(0.5, 0.5);
+
+    }
+}
+
 var game = new Phaser.Game(1360, 720, Phaser.AUTO, '', );
 game.state.add('menu', mainMenuState);
 game.state.add('main', mainState);
 game.state.add('video', videoState);
+game.state.add('end', endMenuState);
 game.state.start('menu');
