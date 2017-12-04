@@ -149,26 +149,35 @@ var mainState = {
     },
 
     update: function () {
-        //        this.liveimg=this.coinGroup.children.filter(function(e) {  return e.alive});
+        this.liveimg = (this.coinGroup.children.filter(function (e) {
+            return e.alive
+        }).length) * 3;
         this.progress.clear();
         this.progress = game.add.graphics(0, 0);
         this.progress.lineStyle(2, '0x000000');
         this.progress.beginFill('0x000000', 100);
         this.progress.drawRoundedRect(10, 50, 300, 27, 10);
         this.progress.endFill();
-        this.progress.beginFill('0x999999', 1); //For drawing progress
-        // the original image width in pixels
-        // then on updateprogress.width = percentDone*progress.initialWidth;
-        // percentDone should be in decimals 20% = 0.2
-        // so this will finaly result in 1 * 300 = 100%
-        this.progress.drawRoundedRect(11, 51, this.score , 25, 10);
-        let random = Math.floor(Math.random() * 1) + 1; //need to modify
-        if (random == 1) {
+        if (this.liveimg < 100)
+            this.progress.beginFill('0x07E507', 1);
+        if (this.liveimg < 200 && this.liveimg > 100)
+            this.progress.beginFill('0xFFFF00', 1);
+        if (this.liveimg > 200)
+            this.progress.beginFill('0xFF0000', 1); //For drawing progress
+        if (this.liveimg == 300)
+            alert("y5aybak ya 7amada !");
+        //            this.progress.clear();
+
+        this.progress.drawRoundedRect(11, 51, this.liveimg, 25, 10);
+        let random = Math.floor(Math.random() * 10) + 1; //need to modify
+        if (random == 5) {
             rand = Math.ceil(Math.random() * 1750) + 500; // random number for coin boundries solved here
             this.coinGroup.create(rand, 0, 'coin', 0);
             this.coinGroup.children[this.coinGroup.children.length - 1].anchor.setTo(0.5, 0.5);
         }
-        //console.log(this.coinGroup.children.filter(function(e) {  return e.alive})); // this is to count live "unkilled" children
+        console.log(this.coinGroup.children.filter(function (e) {
+            return e.alive
+        }).lengths); // this is to count live "unkilled" children
 
         this.movePlayer();
         this.moveCoin();
