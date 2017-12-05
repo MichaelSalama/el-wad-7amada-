@@ -2,7 +2,8 @@
 var mainMenuState = {
     preload: function () {
         game.load.image('player', 'assets/player.png');
-        game.load.image('coin', 'assets/coin.png');
+       // game.load.image('coin', 'assets/coin.png');
+        game.load.spritesheet('coin', 'assets/coin.png',100,100);
         game.load.image('building', 'assets/building.jpg');
         game.load.image('dog', 'assets/dog.jpg');
         game.load.audio('soundtrack', 'assets/soundtrack.mp3');
@@ -118,8 +119,13 @@ var mainState = {
             this.coinGroup.children[i].anchor.setTo(0.5, 0.5);
             this.speed = Math.ceil(Math.random() * 350) + 200;
             this.coinGroup.children[i].body.velocity.y = this.speed;
+            this.coinGroup.children[i].scale.setTo(0.85, 0.85);
+           
         }
-
+        this.coinGroup.callAll('animations.add', 'animations', 'moveCoin', [0,1,2,3,4,5,6,7,8,9], 10, true);
+        this.coinGroup.callAll('play', null, 'moveCoin');
+        
+        
         //coinGroup.children[0].body.collideWorldBounds=false;
         //coinGroup.children[0].scale.setTo(0.5,0.5);
 
