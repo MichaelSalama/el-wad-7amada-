@@ -74,6 +74,7 @@ var mainState = {
         this.dogCounter = 0;
         this.score = 0;
         this.anger = 0; // to calculate om 7amada anger!
+        this.jumpCounter=0;
 
 
         game.scale.fullScreenScaleMode = Phaser.ScaleManager.EXACT_FIT;
@@ -158,6 +159,7 @@ var mainState = {
             fontSize: '32px',
             fill: '#000'
         });
+        this.Jump = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
         this.soundTrack = game.add.audio('soundtrack');
         this.dogBarking = game.add.audio('dogbarking');
@@ -232,6 +234,22 @@ var mainState = {
 
     movePlayer: function () {
         this.player.x = game.input.mousePointer.x;
+        //Jump handling
+        if(this.Jump.isDown&&this.jumpCounter==0)
+            {
+                this.player.body.velocity.y=-300;
+                this.jumpCounter++;
+                
+            }
+        else if(this.jumpCounter==30)
+            {
+                this.jumpCounter=0;
+                this.player.body.velocity.y=200;
+            }
+        else if(this.jumpCounter!=0)
+            {
+                this.jumpCounter++;
+            }
         game.physics.arcade.collide(this.player, this.coin);
         if (this.player.body.blocked.left)
             this.player.body.velocity.x = 0;
@@ -257,17 +275,19 @@ var mainState = {
         if (this.dogAppeared) {
             //check anger condition!!
             if (this.anger === 5) {
+                this.soundTrack.stop();
                 this.state.start('end');
             }
 
             this.dogCounter++;
-            if (this.dogCounter == 120) {
+            if (this.dogCounter == 30) {
                 this.dog.x = -150;
                 this.dogCounter = 0;
                 this.dogAppeared = false;
 
             }
         }
+        
 
 
     },
