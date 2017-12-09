@@ -211,7 +211,8 @@ var mainState = {
         this.soundTrack.loopFull();
     },
     PowerUp:function(){
-        var random = 3//Math.ceil(Math.random() * 100) + 1;
+        var random = Math.ceil(Math.random() * 5) + 1;
+        this.GBone.angle+=1;
         if(random==3 && this.GBone.body.y==-150)
         {
             random = Math.floor(Math.random() * (600-225+1)+ 500) ;
@@ -226,10 +227,12 @@ var mainState = {
             this.GBoneCounter+=1;
             this.GBone.body.y=-300;
             this.GBone.body.velocity.y=0;
+
         }
         if(this.GBoneCounter!=0)
         {
             this.GBoneCounter+=1;
+           
         }
         if(this.GBoneCounter==300)
         {
