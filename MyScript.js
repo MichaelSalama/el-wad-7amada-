@@ -2,7 +2,7 @@
 var mainMenuState = {
     preload: function () {
         game.load.image('player', 'assets/player.png');
-       // game.load.image('coin', 'assets/coin.png');
+        // game.load.image('coin', 'assets/coin.png');
         game.load.spritesheet('coin', 'assets/coin.png',100,100);
         game.load.image('building', 'assets/building.jpg');
         game.load.image('dog', 'assets/dog.jpg');
@@ -10,6 +10,7 @@ var mainMenuState = {
         game.load.audio('dogbarking', 'assets/dogbarking.mp3');
         game.load.video('testvideo', 'assets/testvideo.mp4');
         game.load.image('aqua', 'assets/aqua.png');
+        game.load.image('GBone', 'assets/Golden Bone.png');
 
     },
 
@@ -75,6 +76,8 @@ var mainState = {
         this.score = 0;
         this.anger = 0; // to calculate om 7amada anger!
         this.jumpCounter=0;
+        this.GBoneTaken=false;
+        this.GBoneCounter=0;
 
 
         game.scale.fullScreenScaleMode = Phaser.ScaleManager.EXACT_FIT;
@@ -91,6 +94,14 @@ var mainState = {
         this.building = game.add.sprite(675, 400, 'building');
         this.building.anchor.setTo(0.5, 0.5);
         this.building.width = 900;
+
+        //creating Golden Bone
+        this.GBone = game.add.sprite(675, -100, 'GBone');
+        this.GBone.anchor.setTo(0.5, 0.5);
+        game.physics.arcade.enable(this.GBone);
+        //this.GBone.scale.set(0.5,0.5);
+        this.GBone.width = 100;
+        this.GBone.height = 100;
 
         //Create Player
         this.player = game.add.sprite(650, 700, 'player');
@@ -121,12 +132,12 @@ var mainState = {
             this.speed = Math.ceil(Math.random() * 350) + 200;
             this.coinGroup.children[i].body.velocity.y = this.speed;
             this.coinGroup.children[i].scale.setTo(0.85, 0.85);
-           
+
         }
         this.coinGroup.callAll('animations.add', 'animations', 'moveCoin', [0,1,2,3,4,5,6,7,8,9], 10, true);
         this.coinGroup.callAll('play', null, 'moveCoin');
-        
-        
+
+
         //coinGroup.children[0].body.collideWorldBounds=false;
         //coinGroup.children[0].scale.setTo(0.5,0.5);
 
@@ -176,7 +187,7 @@ var mainState = {
         this.progress.beginFill('0x000000', 100);
         this.progress.drawRoundedRect(10, 50, 300, 27, 10);
         this.progress.endFill();
-//<<<<<<< HEAD
+        //<<<<<<< HEAD
         if (this.liveimg < 100)
             this.progress.beginFill('0x07E507', 1);
         if (this.liveimg < 200 && this.liveimg > 100)
@@ -190,71 +201,73 @@ var mainState = {
         this.progress.drawRoundedRect(11, 51, this.liveimg, 25, 10);
         let random = Math.floor(Math.random() * 10) + 1; //need to modify
         if (random == 5) {
-//=======
-        this.progress.beginFill('0x999999', 1); //For drawing progress
-        // the original image width in pixels
-        // then on updateprogress.width = percentDone*progress.initialWidth;
-        // percentDone should be in decimals 20% = 0.2
-        // so this will finaly result in 1 * 300 = 100%
-//  <<<<<<< //.merge_file_a04832
-        /*
-        this.progress.drawRoundedRect(11, 51, this.score * 0.2, 25, 10);
-        let random = Math.floor(Math.random() * 100) + 1; //need to modify
-=======
-        this.progress.drawRoundedRect(11, 51, this.score, 25, 10);
-        let random = Math.floor(Math.random() * 1) + 1; //need to modify
->>>>>>> .merge_file_a03148
-        if (random == 1) {
-<<<<<<< HEAD
->>>>>>> 74941cafbd321252e7c36566cfb96c1536f8b979
-            rand = Math.ceil(Math.random() * 1750) + 500; // random number for coin boundries solved here
-            this.coinGroup.create(rand, 0, 'coin', 0);
-            this.coinGroup.children[this.coinGroup.children.length - 1].anchor.setTo(0.5, 0.5);
+            this.progress.beginFill('0x999999', 1); //For drawing progress
         }
-        console.log(this.coinGroup.children.filter(function (e) {
-            return e.alive
-        }).lengths); // this is to count live "unkilled" children
-=======
-             // random number for coin boundries solved here
-            this.coinGroup.create(rand, 0, 'coin', 0);
-            this.coinGroup.children[this.coinGroup.children.length - 1].anchor.setTo(0.5, 0.5);
-        }
-        */
-        //console.log(this.coinGroup.children.filter(function(e) {  return e.alive})); // this is to count live "unkilled" children
-//>>>>>>> 0d2b907b2516ccd7193648e657a0903143e5af8d
-
-        
-        }
+        this.PowerUp();
         this.movePlayer();
         this.moveCoin();
     },
     StartSound: function () {
         this.soundTrack.loopFull();
     },
+    PowerUp:function(){
+        var random = 3//Math.ceil(Math.random() * 100) + 1;
+        if(random==3 && this.GBone.body.y==-150)
+        {
+            random = Math.floor(Math.random() * (600-225+1)+ 500) ;
+            this.GBone.body.x=random;
+            this.GBone.body.y=0;
+            this.boneSpeed = Math.ceil(Math.random() *350) + 200;
+            this.GBone.body.velocity.y = this.boneSpeed;
+        }
+        if( game.physics.arcade.overlap(this.player, this.GBone))
+        {
+            this.GBoneTaken=true;
+            this.GBoneCounter+=1;
+            this.GBone.body.y=-300;
+            this.GBone.body.velocity.y=0;
+        }
+        if(this.GBoneCounter!=0)
+        {
+            this.GBoneCounter+=1;
+        }
+        if(this.GBoneCounter==300)
+        {
+            this.GBoneTaken=false;
+            this.GBoneCounter=0;
+            this.GBone.body.y=-150;
+        }
+        if(this.GBone.body.y>700)
+        {
+            this.GBone.body.y=-150;
+            this.GBone.body.velocity.y=0;
+        }
+
+    },
 
     movePlayer: function () {
         this.player.x = game.input.mousePointer.x;
         //Jump handling
         if(this.Jump.isDown&&this.jumpCounter==0)
-            {
-                this.player.body.velocity.y=-300;
-                this.jumpCounter++;
-                
-            }
+        {
+            this.player.body.velocity.y=-300;
+            this.jumpCounter++;
+
+        }
         else if(this.jumpCounter==30)
-            {
-                this.jumpCounter=0;
-                this.player.body.velocity.y=200;
-            }
+        {
+            this.jumpCounter=0;
+            this.player.body.velocity.y=200;
+        }
         else if(this.jumpCounter!=0)
-            {
-                this.jumpCounter++;
-            }
-        game.physics.arcade.collide(this.player, this.coin);
+        {
+            this.jumpCounter++;
+        }
+        //game.physics.arcade.collide(this.player, this.coin);
         if (this.player.body.blocked.left)
             this.player.body.velocity.x = 0;
 
-        if (this.player.body.x < 1130 && this.player.body.x > 1115 && this.dogCounter == 0) {
+        if (this.player.body.x < 1130 && this.player.body.x > 1115 && this.dogCounter == 0 &&  this.GBoneTaken==false) {
             this.dog.x = 1150;
             this.dogAppeared = true;
             this.dog.scale.setTo(0.5, 0.5);
@@ -263,7 +276,7 @@ var mainState = {
             this.angerText.text = 'Anger: ' + this.anger;
         }
 
-        if (this.player.body.x < 230 && this.player.body.x > 210 && this.dogCounter == 0) {
+        if (this.player.body.x < 230 && this.player.body.x > 210 && this.dogCounter == 0&&  this.GBoneTaken==false) {
             this.dog.x = 150;
             this.dogAppeared = true;
             this.dog.scale.setTo(-0.5, 0.5);
@@ -287,7 +300,7 @@ var mainState = {
 
             }
         }
-        
+
 
 
     },
@@ -296,7 +309,7 @@ var mainState = {
 
         for (var i = 0, len = this.coinGroup.children.length; i < len; i++) {
 
-            
+
             //changed some stuff here so that if a coin has collided with hamada or reached bottom
             //it reappears on the top and it's speed is random generated
             if (game.physics.arcade.overlap(this.player, this.coinGroup.children[i])) {
@@ -324,7 +337,7 @@ var mainState = {
                 this.coinGroup.children[i].body.velocity.y = this.speed;
 
             }
-           
+
 
         }
 
