@@ -25,7 +25,6 @@ var mainMenuState = {
     update: function () {
 
     },
-
     createButton: function (game, string, x, y, w, h, callback) {
         var button1 = game.add.button(x, y, 'aqua', callback, this, 2, 1, 0);
         button1.anchor.setTo(0.5, 0.5);
@@ -38,7 +37,6 @@ var mainMenuState = {
             align: "center"
         });
         txt.anchor.setTo(0.5, 0.5);
-
     }
 }
 //var progress;
@@ -66,19 +64,19 @@ var mainState = {
     },
 
     create: function () {
-
         this.angerCounter = 0;
         this.speed = 700;
         var rand;
         var coinGroup;
         this.dogAppeared = false;
         this.dogCounter = 0;
-        this.score = 0;
+        this.score1 = 0;
+        this.score2 = 0;
         this.anger = 0; // to calculate om 7amada anger!
-        this.jumpCounter = 0;
+        this.jumpCounter1 = 0;
+        this.jumpCounter2 = 0;
         this.GBoneTaken = false;
         this.GBoneCounter = 0;
-
 
         game.scale.fullScreenScaleMode = Phaser.ScaleManager.EXACT_FIT;
         game.scale.startFullScreen(false);
@@ -134,8 +132,6 @@ var mainState = {
             this.playersGroup.children[i].anchor.setTo(0.5, 0.5);
         }
 
-
-
         //coin group
         // changed coin group instead of random generating an endless array 
         // i made a group of 10 elements that loop
@@ -156,10 +152,8 @@ var mainState = {
         this.coinGroup.callAll('animations.add', 'animations', 'moveCoin', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 10, true);
         this.coinGroup.callAll('play', null, 'moveCoin');
 
-
         //coinGroup.children[0].body.collideWorldBounds=false;
         //coinGroup.children[0].scale.setTo(0.5,0.5);
-
 
         //create coin
         /*
@@ -178,18 +172,23 @@ var mainState = {
         this.dog.anchor.setTo(0.5, 0.5);
         this.dog.scale.setTo(-0.5, 0.5);
 
-        //create score
-        this.scoreText = game.add.text(16, 16, 'score: 0', {
+        //create score1 & score2
+        this.score1Text = game.add.text(16, 16, 'Player1 \'score: 0', {
+            fontSize: '32px',
+            fill: '#000'
+        });
+        this.score2Text = game.add.text(1000, 16, 'Player2 \'score: 0', {
             fontSize: '32px',
             fill: '#000'
         });
 
+
         //create anger 
-        this.angerText = game.add.text(500, 16, 'Anger: 0', {
+        this.anger1Text = game.add.text(500, 16, 'Anger: 0', {
             fontSize: '32px',
             fill: '#000'
         });
-        this.Jump = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        //this.Jump = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
         this.soundTrack = game.add.audio('soundtrack');
         this.dogBarking = game.add.audio('dogbarking');
@@ -244,6 +243,12 @@ var mainState = {
             this.GBone.body.y = -300;
             this.GBone.body.velocity.y = 0;
         }
+        if (game.physics.arcade.overlap(this.playersGroup.children[1], this.GBone)) {
+            this.GBoneTaken = true;
+            this.GBoneCounter += 1;
+            this.GBone.body.y = -300;
+            this.GBone.body.velocity.y = 0;
+        }
         if (this.GBoneCounter != 0) {
             this.GBoneCounter += 1;
         }
@@ -260,7 +265,7 @@ var mainState = {
     },
 
     movePlayer: function () {
-      //  this.playersGroup.children[0].x = game.input.mousePointer.x;
+        //  this.playersGroup.children[0].x = game.input.mousePointer.x;
         //cursors for player1
         cursor1 = game.input.keyboard.createCursorKeys();
         //wasd for player2
@@ -270,45 +275,49 @@ var mainState = {
 
         //player1 controls
         if (cursor1.left.isDown)
-        {
-            this.playersGroup.children[0].body.velocity.x= -200;
-        }
-        else if(cursor1.right.isDown)
-        {
-           this.playersGroup.children[0].body.velocity.x= 200;
-        }
+            this.playersGroup.children[0].body.velocity.x = -200;
+        else if (cursor1.right.isDown)
+            this.playersGroup.children[0].body.velocity.x = 200;
         else
-        {
-            this.playersGroup.children[0].body.velocity.x=0
-        }
+            this.playersGroup.children[0].body.velocity.x = 0
 
         //player2 controls
-        if(leftButton.isDown)
-        {
+        if (leftButton.isDown)
             this.playersGroup.children[1].body.velocity.x = -200;
-        }
-        else if(rightButton.isDown)
-        {
-            this.playersGroup.children[1].body.velocity.x = 200;
-        }
-        else{
-            this.playersGroup.children[1].body.velocity.x=0;
-        }
-    
-            //Jump handling for player1
-            if (this.Jump.isDown && this.jumpCounter == 0) {
-                this.playersGroup.children[0].body.velocity.y = -300;
-                this.jumpCounter++;
 
-            } else if (this.jumpCounter == 30) {
-            this.jumpCounter = 0;
+        else if (rightButton.isDown)
+            this.playersGroup.children[1].body.velocity.x = 200;
+        else
+            this.playersGroup.children[1].body.velocity.x = 0;
+
+        //Jump handling for player1
+        if (cursor1.up.isDown && this.jumpCounter1 == 0) {
+            this.playersGroup.children[0].body.velocity.y = -300;
+            this.jumpCounter1++;
+
+        } else if (this.jumpCounter1 == 30) {
+            this.jumpCounter1 = 0;
             this.playersGroup.children[0].body.velocity.y = 200;
-        } else if (this.jumpCounter != 0) {
-            this.jumpCounter++;
+        } else if (this.jumpCounter1 != 0) {
+            this.jumpCounter1++;
         }
+        //jump ahndling for playre2
+        if (upButton.isDown && this.jumpCounter2 == 0) {
+            this.playersGroup.children[1].body.velocity.y = -200;
+            this.jumpCounter2++;
+        } else if (this.jumpCounter2 == 30) {
+            this.jumpCounter2 = 0;
+            this.playersGroup.children[1].body.velocity.y = 200;
+        } else if (this.jumpCounter2 != 0) {
+            this.jumpCounter2++;
+        }
+
         //game.physics.arcade.collide(this.player, this.coin);
         if (this.playersGroup.children[0].body.blocked.left)
             this.playersGroup.children[0].body.velocity.x = 0;
+
+        if (this.playersGroup.children[1].body.blocked.left)
+            this.playersGroup.children[1].body.velocity.x = 0;
 
         if (this.playersGroup.children[0].body.x < 1130 && this.playersGroup.children[0].body.x > 1115 && this.dogCounter == 0 && this.GBoneTaken == false) {
             this.dog.x = 1150;
@@ -316,7 +325,16 @@ var mainState = {
             this.dog.scale.setTo(0.5, 0.5);
             this.dogBarking.play();
             this.anger += 1;
-            this.angerText.text = 'Anger: ' + this.anger;
+            this.anger1Text.text = 'Anger: ' + this.anger;
+        }
+        //dog appearnce with player1 & player2
+        if (this.playersGroup.children[1].body.x < 1130 && this.playersGroup.children[1].body.x > 1115 && this.dogCounter == 0 && this.GBoneTaken == false) {
+            this.dog.x = 1150;
+            this.dogAppeared = true;
+            this.dog.scale.setTo(0.5, 0.5);
+            this.dogBarking.play();
+            this.anger += 1;
+            this.anger1Text.text = 'Anger: ' + this.anger;
         }
 
         if (this.playersGroup.children[0].body.x < 230 && this.playersGroup.children[0].body.x > 210 && this.dogCounter == 0 && this.GBoneTaken == false) {
@@ -325,7 +343,16 @@ var mainState = {
             this.dog.scale.setTo(-0.5, 0.5);
             this.dogBarking.play();
             this.anger += 1;
-            this.angerText.text = 'Anger: ' + this.anger;
+            this.anger1Text.text = 'Anger: ' + this.anger;
+        }
+
+        if (this.playersGroup.children[1].body.x < 230 && this.playersGroup.children[1].body.x > 210 && this.dogCounter == 0 && this.GBoneTaken == false) {
+            this.dog.x = 150;
+            this.dogAppeared = true;
+            this.dog.scale.setTo(-0.5, 0.5);
+            this.dogBarking.play();
+            this.anger += 1;
+            this.anger1Text.text = 'Anger: ' + this.anger;
         }
 
         if (this.dogAppeared) {
@@ -351,24 +378,32 @@ var mainState = {
     moveCoin: function () {
 
         for (var i = 0, len = this.coinGroup.children.length; i < len; i++) {
-
-
             //changed some stuff here so that if a coin has collided with hamada or reached bottom
             //it reappears on the top and it's speed is random generated
             if (game.physics.arcade.overlap(this.playersGroup.children[0], this.coinGroup.children[i])) {
 
                 //this.coinGroup.children[i].kill();
-                this.score += 1;
-                this.scoreText.text = 'Score: ' + this.score;
+                this.score1 += 1;
+                this.score1Text.text = 'Player1\'s Score: ' + this.score1;
                 this.coinGroup.children[i].body.touching.down = false;
                 rand = Math.ceil(Math.random() * 1750) + 500;
                 this.coinGroup.children[i].x = rand;
                 this.coinGroup.children[i].y = 0;
                 this.speed = Math.ceil(Math.random() * 350) + 200;
                 this.coinGroup.children[i].body.velocity.y = this.speed;
-
-
+            } else if (game.physics.arcade.overlap(this.playersGroup.children[1], this.coinGroup.children[i])) {
+                this.score2 += 1;
+                this.score2Text.text = 'player2\'s Score: ' + this.score2;
+                this.coinGroup.children[i].body.touching.down = false;
+                rand = Math.ceil(Math.random() * 1750) + 500;
+                this.coinGroup.children[i].x = rand;
+                this.coinGroup.children[i].y = 0;
+                this.speed = Math.ceil(Math.random() * 350) + 200;
+                this.coinGroup.children[i].body.velocity.y = this.speed;
             }
+
+
+
             if (this.coinGroup.children[i].body.y > 700) {
                 //  this.coinGroup.children[i].kill();
                 this.angerCounter += 1;
@@ -377,7 +412,6 @@ var mainState = {
                 this.coinGroup.children[i].y = 0;
                 this.speed = Math.ceil(Math.random() * 350) + 200;
                 this.coinGroup.children[i].body.velocity.y = this.speed;
-
             }
 
 
@@ -385,7 +419,6 @@ var mainState = {
 
     },
     // collisionHandler: function (player, coinGroup) {
-
     // },
 };
 
@@ -425,7 +458,6 @@ var endMenuState = {
             //this.state.start('video');
             this.state.start('main');
         });
-
     },
 
     createButton: function (game, string, x, y, w, h, callback) {
@@ -440,9 +472,7 @@ var endMenuState = {
             align: "center"
         });
         txt.anchor.setTo(0.5, 0.5);
-
     },
-
 }
 
 var game = new Phaser.Game(1360, 720, Phaser.AUTO, '', );
