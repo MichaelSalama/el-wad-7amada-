@@ -19,7 +19,9 @@ var mainMenuState = {
             //this.state.start('video');
             this.state.start('main');
         });
-
+        this.createButton(game, "Ahmed & 7amada", game.world.centerX, game.world.centerY +50, 300, 100, function () {
+            this.state.start('main');
+        })
     },
 
     update: function () {
