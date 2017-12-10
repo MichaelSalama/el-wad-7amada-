@@ -59,9 +59,9 @@ var mainState = {
 
         this.progress = game.add.graphics(0, 0);
         this.progress.lineStyle(2, '0x000000');
-        this.progress.beginFill('0x000000', 100);
+        this.progress.beginFill('0x000000', 0);
         this.progress.drawRoundedRect(10, 50, 300, 27, 10);
-        this.progress.endFill(150);
+        this.progress.endFill();
         this.progress.beginFill('0x999999', 1); //For drawing progress
     },
 
@@ -176,33 +176,38 @@ var mainState = {
         this.dogBarking = game.add.audio('dogbarking');
         game.sound.setDecodedCallback([this.soundTrack, this.dogBarking], this.StartSound, this);
     },
-
-    update: function () {
-        this.liveimg = (this.coinGroup.children.filter(function (e) {
-            return e.alive
-        }).length) * 3;
-        this.progress.clear();
+    progressbar_score:function(){
+         this.progress.clear();
         this.progress = game.add.graphics(0, 0);
         this.progress.lineStyle(2, '0x000000');
-        this.progress.beginFill('0x000000', 100);
-        this.progress.drawRoundedRect(10, 50, 300, 27, 10);
+        this.progress.beginFill('0x000000');
+        this.progress.drawRoundedRect(10, 50, 300, 27, 11);
         this.progress.endFill();
         //<<<<<<< HEAD
-        if (this.liveimg < 100)
-            this.progress.beginFill('0x07E507', 1);
-        if (this.liveimg < 200 && this.liveimg > 100)
+        if (this.score < 20)
+            this.progress.beginFill('0xFF0000', 1);
+        if (this.score <= 50 && this.score >= 20)
             this.progress.beginFill('0xFFFF00', 1);
-        if (this.liveimg > 200)
-            this.progress.beginFill('0xFF0000', 1); //For drawing progress
-        if (this.liveimg == 300)
-            alert("y5aybak ya 7amada !");
+         //if (this.score == 50)                    //will do something later
+          //  console.log("y5aybak ya 7amada !");
+        if (this.score > 50)
+            this.progress.beginFill('0x07E507', 1); //For drawing progress
+        if(this.score==100){
+            
+        }
+       
+        this.progress.drawRoundedRect(12, 51, this.score*3, 25, 10);
+    },
+
+    update: function () {
+        this.liveimg = (this.coinGroup.children.filter(function (e) {return e.alive}).length) * 3;
+       this.progressbar_score();
         //            this.progress.clear();
 
-        this.progress.drawRoundedRect(11, 51, this.liveimg, 25, 10);
-        let random = Math.floor(Math.random() * 10) + 1; //need to modify
-        if (random == 5) {
-            this.progress.beginFill('0x999999', 1); //For drawing progress
-        }
+    //        let random = Math.floor(Math.random() * 10) + 1; //need to modify
+    //        if (random == 5) {
+    //            this.progress.beginFill('0x999999', 1); //For drawing progress
+    //        }
         this.PowerUp();
         this.movePlayer();
         this.moveCoin();
