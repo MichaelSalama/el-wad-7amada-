@@ -5,7 +5,7 @@ var mainMenuState = {
         // game.load.image('coin', 'assets/coin.png');
         game.load.spritesheet('coin', 'assets/coin.png',100,100);
         game.load.image('building', 'assets/building.jpg');
-        game.load.image('dog', 'assets/dog.jpg');
+        game.load.image('dog', 'assets/dog.png');
         game.load.audio('soundtrack', 'assets/soundtrack.mp3');
         game.load.audio('dogbarking', 'assets/dogbarking.mp3');
         game.load.video('testvideo', 'assets/testvideo.mp4');
@@ -216,7 +216,7 @@ var mainState = {
         this.soundTrack.loopFull();
     },
     PowerUp:function(){
-        var random = Math.ceil(Math.random() * 5) + 1;
+        var random = Math.ceil(Math.random() * 100000) + 1;
         this.GBone.angle+=1;
         if(random==3 && this.GBone.body.y==-150)
         {
@@ -278,7 +278,7 @@ var mainState = {
         if (this.player.body.x < 1130 && this.player.body.x > 1115 && this.dogCounter == 0 &&  this.GBoneTaken==false) {
             this.dog.x = 1150;
             this.dogAppeared = true;
-            this.dog.scale.setTo(0.5, 0.5);
+            this.dog.scale.setTo(-0.5, 0.5);
             this.dogBarking.play();
             this.anger += 1;
             this.angerText.text = 'Anger: ' + this.anger;
@@ -287,7 +287,7 @@ var mainState = {
         if (this.player.body.x < 230 && this.player.body.x > 210 && this.dogCounter == 0&&  this.GBoneTaken==false) {
             this.dog.x = 150;
             this.dogAppeared = true;
-            this.dog.scale.setTo(-0.5, 0.5);
+            this.dog.scale.setTo(0.5, 0.5);
             this.dogBarking.play();
             this.anger += 1;
             this.angerText.text = 'Anger: ' + this.anger;
