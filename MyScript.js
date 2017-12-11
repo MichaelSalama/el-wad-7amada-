@@ -18,6 +18,11 @@ var mainMenuState = {
     },
 
     create: function () {
+        this.building = game.add.sprite(675, 400, 'building');
+        this.building.anchor.setTo(0.5, 0.5);
+        this.building.height = 820;
+        this.building.width = 1380;
+
         this.createButton(game, "7amada", game.world.centerX, game.world.centerY - 50, 300, 100, function () {
             //this.state.start('video');
             this.state.start('main');
@@ -25,7 +30,11 @@ var mainMenuState = {
         this.createButton(game, "a7med & 7amda", game.world.centerX, game.world.centerY + 50, 300, 100, function () {
             this.state.start('multi');
         });
+        this.createButton(game, "Credits", game.world.centerX, game.world.centerY + 300, 300, 100, function () {
+            this.state.start('credits');
+        });
     },
+    
 
     update: function () {},
 
@@ -344,11 +353,15 @@ var endMenuState = {
     preload: function () {},
 
     create: function () {
+        this.building = game.add.sprite(675, 400, 'building');
+        this.building.anchor.setTo(0.5, 0.5);
+        this.building.height = 820;
+        this.building.width = 1380;
         //create end statment
         this.endStatement = game.add.text(500, 150, 'Y5aybak ya 7amada!', {
             fontFamily: 'Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif',
             fontSize: '32px',
-            fill: '#000'
+            fill: '#f0f'
         });
 
         this.createButton(game, "Replay", game.world.centerX, game.world.centerY + 32, 300, 100, function () {
@@ -371,6 +384,41 @@ var endMenuState = {
         txt.anchor.setTo(0.5, 0.5);
     },
 }
+
+var creditsState = {
+    preload: function () {},
+    create: function () {
+        this.building = game.add.sprite(675, 400, 'building');
+        this.building.anchor.setTo(0.5, 0.5);
+        this.building.height = 820;
+        this.building.width = 1380;
+
+        this.creditsState = game.add.text(550, 100,'Special Thanks to Artist: \n' + 'AYA NASSER\n\n\n\n'+ 'Developed By: \n' + 'Ahmed Hafez \n' + 'Abdelrahman Atwan \n' + 'Michael Fawzy' , {
+            fontFamily: 'Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif',
+            fontSize: '32px',
+            fill: '#f0f'
+        });
+
+        this.createButton(game, "Back", game.world.centerX, game.world.centerY + 300, 300, 100, function () {
+            //this.state.start('video');
+            this.state.start('menu');
+        });
+    },
+    createButton: function (game, string, x, y, w, h, callback) {
+        var button1 = game.add.button(x, y, 'aqua', callback, this, 2, 1, 0);
+        button1.anchor.setTo(0.5, 0.5);
+        button1.width = w;
+        button1.height = h;
+
+        var txt = game.add.text(button1.x, button1.y, string, {
+            font: "14px arial",
+            fill: "#fff",
+            align: "center"
+        });
+        txt.anchor.setTo(0.5, 0.5);
+    },
+}
+
 // multistate for game
 var multiState = {
 
@@ -445,7 +493,7 @@ var multiState = {
 
         this.player2 = game.add.sprite(550, 700, 'player');
         this.player2.anchor.setTo(0.5, 0.5);
-        this.player2.scale.set(0.5, 0.5);        
+        this.player2.scale.set(0.5, 0.5);
         game.physics.arcade.enable(this.player2);
         this.player2.body.collideWorldBounds = true;
 
@@ -618,7 +666,7 @@ var multiState = {
         if (this.player.body.blocked.left)
             this.player.body.velocity.x = 0;
 
-            if (this.player2.body.blocked.left)
+        if (this.player2.body.blocked.left)
             this.player2.body.velocity.x = 0;
 
         if (this.player.body.x < 1130 && this.player.body.x > 1110 && this.dogCounter == 0 && this.GBoneTaken == false) {
@@ -647,7 +695,7 @@ var multiState = {
             this.anger += 1;
             this.angerText.text = 'Player1\'s Anger: ' + this.anger;
         }
- if (this.player2.body.x < 170 && this.player2.body.x > 140 && this.dogCounter == 0 && this.GBoneTaken == false) {
+        if (this.player2.body.x < 170 && this.player2.body.x > 140 && this.dogCounter == 0 && this.GBoneTaken == false) {
             this.dog.x = 100;
             this.dogAppeared = true;
             this.dog.scale.setTo(0.5, 0.5);
@@ -693,7 +741,7 @@ var multiState = {
 
             if (game.physics.arcade.overlap(this.player2, this.coinGroup.children[i])) {
                 this.score2 += 1;
-                this.scoreText2.text= 'Player2\'s Score: ' +this.score2;
+                this.scoreText2.text = 'Player2\'s Score: ' + this.score2;
                 this.coinGroup.children[i].body.touching.down = false;
                 rand = Math.ceil(Math.random() * 1750) + 500;
                 this.coinGroup.children[i].x = rand;
@@ -711,9 +759,9 @@ var multiState = {
                 this.speed = Math.ceil(Math.random() * 350) + 200;
                 this.coinGroup.children[i].body.velocity.y = this.speed;
             }
-            
-            if (this.coinGroup.children[i].body.y >700){
-                this.angerCounter2+=1;
+
+            if (this.coinGroup.children[i].body.y > 700) {
+                this.angerCounter2 += 1;
                 rand = Math.ceil(Math.random() * 1750) + 500;
                 this.coinGroup.children[i].x = rand;
                 this.coinGroup.children[i].y = 0;
@@ -731,4 +779,5 @@ game.state.add('main', mainState);
 game.state.add('multi', multiState);
 game.state.add('video', videoState);
 game.state.add('end', endMenuState);
+game.state.add('credits',creditsState);
 game.state.start('menu');
