@@ -295,8 +295,8 @@ var mainState = {
             this.dogAppeared = true;
             this.dog.scale.setTo(0.5, 0.5);
             this.dogBarking.play();
-            this.anger += 1;
-            this.angerText.text = 'Anger: ' + this.anger;
+            this.anger += 5;
+            this.angerText.text = 'Anger: ' + this.anger/5;
         }
 
         if (this.player.body.x < 230 && this.player.body.x > 210 && this.dogCounter == 0&&  this.GBoneTaken==false) {
@@ -304,14 +304,14 @@ var mainState = {
             this.dogAppeared = true;
             this.dog.scale.setTo(-0.5, 0.5);
             this.dogBarking.play();
-            this.anger += 1;
-            this.angerText.text = 'Anger: ' + this.anger;
+            this.anger += 5;
+            this.angerText.text = 'Anger: ' + this.anger/5;
             this.lose+=this.anger;
         }
 
         if (this.dogAppeared) {
             //check anger condition!!
-            if (this.anger === 5) {
+            if (this.anger === 25) {
                 this.soundTrack.stop();
                 this.state.start('end');
             }
