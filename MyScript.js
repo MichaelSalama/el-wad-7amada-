@@ -57,7 +57,7 @@ var mainState = {
         this.losebar = game.add.graphics(0, 0);
         this.losebar.lineStyle(2, '0x000000');
         this.losebar.beginFill('0x000000', 0);
-        this.losebar.drawRoundedRect(1050, 50, 330, 27, 10);
+        this.losebar.drawRoundedRect(1050, 50, 300, 27, 10);
         this.losebar.endFill();
         this.losebar.beginFill('0x999999', 1); //For drawing progress
     },
@@ -72,7 +72,7 @@ var mainState = {
         this.dogCounter = 0;
         this.score = 0;
         this.score1 = 7;
-        this.lose = 7;
+        this.lose = 9;
         this.anger = 0; // to calculate om 7amada anger!
         this.jumpCounter=0;
         this.GBoneTaken=false;
@@ -165,7 +165,7 @@ var mainState = {
         });
 
         //create anger 
-        this.angerText = game.add.text(500, 16, 'Anger: 0', {
+        this.angerText = game.add.text(1050, 16, 'Anger: 0', {
             fontSize: '32px',
             fill: '#000'
         });
@@ -197,7 +197,7 @@ var mainState = {
         this.progress.drawRoundedRect(12, 51, this.score1*3, 25, 10);
     },
     
-    progressbar_lose:function(liveimg){
+    progressbar_lose:function(){
         this.losebar.clear();
         this.losebar = game.add.graphics(0, 0);
         this.losebar.lineStyle(2, '0x000000');
@@ -205,9 +205,10 @@ var mainState = {
         this.losebar.drawRoundedRect(1050, 50, 300, 27, 11);
         this.losebar.endFill();
         //<<<<<<< HEAD
-        if(this.liveimg==100){
-             this.liveimg=0;
-            this.losebar.clear();
+        if(this.lose==150){
+        this.state.start('end');
+        this.lose=7;
+        this.losebar.clear();
         this.losebar = game.add.graphics(0, 0);
         this.losebar.lineStyle(2, '0x000000');
         this.losebar.beginFill('0x000000');
@@ -215,15 +216,13 @@ var mainState = {
         this.losebar.endFill();
 
         }
-        this.losebar.beginFill('0x07E507', 1); //For drawing progress
-        this.losebar.drawRoundedRect(1052, 51, liveimg, 25, 10);
+        this.losebar.beginFill('0xff0000', 1); //For drawing progress
+        this.losebar.drawRoundedRect(1052, 51, this.lose*2, 25, 10);
     },
 
     update: function () {
-                this.liveimg = (this.coinGroup.children.filter(function (e) {return e.alive}).length) * 3;
-
-       this.progressbar_score();
-        this.progressbar_lose( this.liveimg);
+        this.progressbar_score();
+        this.progressbar_lose();
         this.PowerUp();
         this.movePlayer();
         this.moveCoin();
@@ -307,6 +306,7 @@ var mainState = {
             this.dogBarking.play();
             this.anger += 1;
             this.angerText.text = 'Anger: ' + this.anger;
+            this.lose+=this.anger;
         }
 
         if (this.dogAppeared) {
@@ -355,6 +355,7 @@ var mainState = {
             {
                 //  this.coinGroup.children[i].kill();
                 this.angerCounter+=1;
+                this.lose+=1;
                 rand = Math.ceil(Math.random() * 1750) + 500;
                 this.coinGroup.children[i].x=rand;
                 this.coinGroup.children[i].y=0;
