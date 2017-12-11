@@ -184,18 +184,25 @@ var mainState = {
         this.progress.drawRoundedRect(10, 50, 300, 27, 11);
         this.progress.endFill();
         //<<<<<<< HEAD
-        if (this.score < 20)
-            this.progress.beginFill('0xFF0000', 1);
-        if (this.score <= 50 && this.score >= 20)
-            this.progress.beginFill('0xFFFF00', 1);
+//        if (this.score < 20)
+//            this.progress.beginFill('0xFF0000', 1);
+//        if (this.score <= 50 && this.score >= 20)
+//            this.progress.beginFill('0xFFFF00', 1);
          //if (this.score == 50)                    //will do something later
           //  console.log("y5aybak ya 7amada !");
-        if (this.score > 50)
-            this.progress.beginFill('0x07E507', 1); //For drawing progress
+//        if (this.score > 50)
+//            this.progress.beginFill('0x07E507', 1); //For drawing progress
         if(this.score==100){
-            
+             this.score=0;
+            this.progress.clear();
+        this.progress = game.add.graphics(0, 0);
+        this.progress.lineStyle(2, '0x000000');
+        this.progress.beginFill('0x000000');
+        this.progress.drawRoundedRect(10, 50, 300, 27, 11);
+        this.progress.endFill();
+
         }
-       
+        this.progress.beginFill('0x07E507', 1); //For drawing progress
         this.progress.drawRoundedRect(12, 51, this.score*3, 25, 10);
     },
 
