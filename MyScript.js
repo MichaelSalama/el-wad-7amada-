@@ -11,11 +11,14 @@ var mainMenuState = {
         game.load.video('testvideo', 'assets/testvideo.mp4');
         game.load.image('aqua', 'assets/aqua.png');
         game.load.image('GBone', 'assets/Golden Bone.png');
+        game.load.image('omHamada', 'assets/mother of hamada.png');
+
+
 
     },
 
     create: function () {
-        this.createButton(game, "7amda", game.world.centerX, game.world.centerY - 50, 300, 100, function () {
+        this.createButton(game, "7amada", game.world.centerX, game.world.centerY - 50, 300, 100, function () {
             //this.state.start('video');
             this.state.start('main');
         });
@@ -66,6 +69,7 @@ var mainState = {
         this.jumpCounter = 0;
         this.GBoneTaken = false;
         this.GBoneCounter = 0;
+        this.shouldOmHamadaMoveLeft=false;
 
 
         game.scale.fullScreenScaleMode = Phaser.ScaleManager.EXACT_FIT;
@@ -81,7 +85,16 @@ var mainState = {
         // create Building
         this.building = game.add.sprite(675, 400, 'building');
         this.building.anchor.setTo(0.5, 0.5);
-        this.building.width = 900;
+        this.building.height=820;
+        this.building.width = 1380;
+
+        this.omHamada = game.add.sprite(675, 400, 'omHamada');
+        this.omHamada.anchor.setTo(0.5, 0.5);
+        this.omHamada.scale.set(0.3,0.3);
+        this.omHamada.y=220;
+        //this.building.height=820;
+        //this.building.width = 1380;
+
 
         //creating Golden Bone
         this.GBone = game.add.sprite(675, -100, 'GBone');
@@ -92,8 +105,9 @@ var mainState = {
         this.GBone.height = 100;
 
         //Create Player
-        this.player = game.add.sprite(650, 700, 'player');
+        this.player = game.add.sprite(650, 900, 'player');
         this.player.anchor.setTo(0.5, 0.5);
+        this.player.scale.set(0.5,0.5);
         //player.scale.setTo(0.5, 0.5);
         game.physics.arcade.enable(this.player);
         this.player.body.collideWorldBounds = true;
@@ -108,7 +122,7 @@ var mainState = {
         this.coinGroup.scale.set(0.5, 0.5);
         for (var i = 0; i < 10; i++) {
             rand = Math.ceil(Math.random() * 1750) + 500;
-            this.coinGroup.create(rand, 0, 'coin', 0);
+            this.coinGroup.create(rand, 370, 'coin', 0);
             this.coinGroup.children[i].anchor.setTo(0.5, 0.5);
             this.speed = Math.ceil(Math.random() * 350) + 200;
             this.coinGroup.children[i].body.velocity.y = this.speed;
@@ -169,42 +183,61 @@ var mainState = {
         this.PowerUp();
         this.movePlayer();
         this.moveCoin();
+        this.MoveOmHamada();
     },
     StartSound: function () {
         this.soundTrack.loopFull();
     },
-    PowerUp: function () {
-        var random = Math.ceil(Math.random() * 100000) + 1;
-        this.GBone.angle += 1;
-        if (random == 3 && this.GBone.body.y == -150) {
-            random = Math.floor(Math.random() * (600 - 225 + 1) + 500);
-            this.GBone.body.x = random;
-            this.GBone.body.y = 0;
-            this.boneSpeed = Math.ceil(Math.random() * 350) + 200;
-            this.GBone.body.velocity.y = this.boneSpeed;
+    MoveOmHamada: function()
+    {
+        if(this.omHamada.x<1000 && this.shouldOmHamadaMoveLeft==false)
+        {
+            this.omHamada.x+=5;
         }
-        if (game.physics.arcade.overlap(this.player, this.GBone)) {
-            this.GBoneTaken = true;
-            this.GBoneCounter += 1;
-            this.GBone.body.y = -300;
-            this.GBone.body.velocity.y = 0;
+        else if(this.omHamada.x>360)
+        {
+            this.shouldOmHamadaMoveLeft=true;
+            this.omHamada.x-=5;
+            if(this.omHamada.x-5<360)
+            {
+                this.shouldOmHamadaMoveLeft=false;
+            }
         }
-        if (this.GBoneCounter != 0) {
-            this.GBoneCounter += 1;
-        }
-        if (this.GBoneCounter == 300) {
-            this.GBoneTaken = false;
-            this.GBoneCounter = 0;
-            this.GBone.body.y = -150;
-        }
-        if (this.GBone.body.y > 700) {
-            this.GBone.body.y = -150;
-            this.GBone.body.velocity.y = 0;
-        }
+
     },
+    PowerUp: function () {
+    var random = Math.ceil(Math.random() * 100000) + 1;
+    this.GBone.angle += 1;
+    if (random == 3 && this.GBone.body.y == -150) {
+    random = Math.floor(Math.random() * (600 - 225 + 1) + 500);
+    this.GBone.body.x = random;
+    this.GBone.body.y = 0;
+    this.boneSpeed = Math.ceil(Math.random() * 350) + 200;
+    this.GBone.body.velocity.y = this.boneSpeed;
+}
+if (game.physics.arcade.overlap(this.player, this.GBone)) {
+    this.GBoneTaken = true;
+    this.GBoneCounter += 1;
+    this.GBone.body.y = -300;
+    this.GBone.body.velocity.y = 0;
+}
+if (this.GBoneCounter != 0) {
+    this.GBoneCounter += 1;
+}
+if (this.GBoneCounter == 300) {
+    this.GBoneTaken = false;
+    this.GBoneCounter = 0;
+    this.GBone.body.y = -150;
+}
+if (this.GBone.body.y > 700) {
+    this.GBone.body.y = -150;
+    this.GBone.body.velocity.y = 0;
+}
+},
 
     movePlayer: function () {
         this.player.x = game.input.mousePointer.x;
+
         //Jump handling
         if (this.Jump.isDown && this.jumpCounter == 0) {
             this.player.body.velocity.y = -300;
@@ -220,8 +253,8 @@ var mainState = {
         if (this.player.body.blocked.left)
             this.player.body.velocity.x = 0;
 
-        if (this.player.body.x < 1130 && this.player.body.x > 1115 && this.dogCounter == 0 && this.GBoneTaken == false) {
-            this.dog.x = 1150;
+        if (this.player.body.x < 1130 && this.player.body.x > 1110 && this.dogCounter == 0 && this.GBoneTaken == false) {
+            this.dog.x = 1270;
             this.dogAppeared = true;
             this.dog.scale.setTo(-0.5, 0.5);
             this.dogBarking.play();
@@ -229,8 +262,8 @@ var mainState = {
             this.angerText.text = 'Anger: ' + this.anger;
         }
 
-        if (this.player.body.x < 230 && this.player.body.x > 210 && this.dogCounter == 0 && this.GBoneTaken == false) {
-            this.dog.x = 150;
+        if (this.player.body.x < 170 && this.player.body.x > 140 && this.dogCounter == 0 && this.GBoneTaken == false) {
+            this.dog.x = 100;
             this.dogAppeared = true;
             this.dog.scale.setTo(0.5, 0.5);
             this.dogBarking.play();
@@ -258,37 +291,37 @@ var mainState = {
 
     },
 
-    moveCoin: function () {
+        moveCoin: function () {
 
-        for (var i = 0, len = this.coinGroup.children.length; i < len; i++) {
+            for (var i = 0, len = this.coinGroup.children.length; i < len; i++) {
 
 
-            //changed some stuff here so that if a coin has collided with hamada or reached bottom
-            //it reappears on the top and it's speed is random generated
-            if (game.physics.arcade.overlap(this.player, this.coinGroup.children[i])) {
+                //changed some stuff here so that if a coin has collided with hamada or reached bottom
+                //it reappears on the top and it's speed is random generated
+                if (game.physics.arcade.overlap(this.player, this.coinGroup.children[i])) {
 
-                //this.coinGroup.children[i].kill();
-                this.score += 1;
-                this.scoreText.text = 'Score: ' + this.score;
-                this.coinGroup.children[i].body.touching.down = false;
-                rand = Math.ceil(Math.random() * 1750) + 500;
-                this.coinGroup.children[i].x = rand;
-                this.coinGroup.children[i].y = 0;
-                this.speed = Math.ceil(Math.random() * 350) + 200;
-                this.coinGroup.children[i].body.velocity.y = this.speed;
+                    //this.coinGroup.children[i].kill();
+                    this.score += 1;
+                    this.scoreText.text = 'Score: ' + this.score;
+                    this.coinGroup.children[i].body.touching.down = false;
+                    rand = Math.ceil(Math.random() * 1750) + 500;
+                    this.coinGroup.children[i].x = rand;
+                    this.coinGroup.children[i].y = 370;
+                    this.speed = Math.ceil(Math.random() * 350) + 200;
+                    this.coinGroup.children[i].body.velocity.y = this.speed;
+                }
+                if (this.coinGroup.children[i].body.y > 700) {
+                    //  this.coinGroup.children[i].kill();
+                    this.angerCounter += 1;
+                    rand = Math.ceil(Math.random() * 1750) + 500;   
+                    this.coinGroup.children[i].x = rand;
+                    this.coinGroup.children[i].y = 370;
+                    this.speed = Math.ceil(Math.random() * 350) + 200;
+                    this.coinGroup.children[i].body.velocity.y = this.speed;
+                }
             }
-            if (this.coinGroup.children[i].body.y > 700) {
-                //  this.coinGroup.children[i].kill();
-                this.angerCounter += 1;
-                rand = Math.ceil(Math.random() * 1750) + 500;
-                this.coinGroup.children[i].x = rand;
-                this.coinGroup.children[i].y = 0;
-                this.speed = Math.ceil(Math.random() * 350) + 200;
-                this.coinGroup.children[i].body.velocity.y = this.speed;
-            }
-        }
 
-    },
+        },
 };
 
 // state for video 
