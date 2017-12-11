@@ -46,23 +46,20 @@ var mainMenuState = {
 var mainState = {
 
     preload: function () {
-        //game.load.image('background', 'assets/Parallex.jpeg');
-
-        //this.preloadBar = game.add.graphics(0, 0);
-        //this.preloadBar.lineStyle(3, '0xffffff', 1);
-        //this.preloadBar.moveTo(0, 0);
-        //this.preloadBar.lineTo(game.width, 0);
-        //this.preloadBar.scale.x = 0;
-        // set the bar to the beginning position}function loadUpdate() { 
-        // every frame during loading, set the scale.x of the bar to the progress (an integer between 0  
-        // and 100) divided by 100 to give a float between 0 and 1  this.preloadBar.scale.x = game.load.progress * 0.
-
+        
         this.progress = game.add.graphics(0, 0);
         this.progress.lineStyle(2, '0x000000');
         this.progress.beginFill('0x000000', 0);
         this.progress.drawRoundedRect(10, 50, 300, 27, 10);
         this.progress.endFill();
-        this.progress.beginFill('0x999999', 1); //For drawing progress
+        this.progress.beginFill('0x999999', 1); //For drawing progress 
+        
+        this.losebar = game.add.graphics(0, 0);
+        this.losebar.lineStyle(2, '0x000000');
+        this.losebar.beginFill('0x000000', 0);
+        this.losebar.drawRoundedRect(1050, 50, 300, 27, 10);
+        this.losebar.endFill();
+        this.losebar.beginFill('0x999999', 1); //For drawing progress
     },
 
     create: function () {
@@ -184,14 +181,6 @@ var mainState = {
         this.progress.drawRoundedRect(10, 50, 300, 27, 11);
         this.progress.endFill();
         //<<<<<<< HEAD
-//        if (this.score < 20)
-//            this.progress.beginFill('0xFF0000', 1);
-//        if (this.score <= 50 && this.score >= 20)
-//            this.progress.beginFill('0xFFFF00', 1);
-         //if (this.score == 50)                    //will do something later
-          //  console.log("y5aybak ya 7amada !");
-//        if (this.score > 50)
-//            this.progress.beginFill('0x07E507', 1); //For drawing progress
         if(this.score==100){
              this.score=0;
             this.progress.clear();
@@ -205,16 +194,34 @@ var mainState = {
         this.progress.beginFill('0x07E507', 1); //For drawing progress
         this.progress.drawRoundedRect(12, 51, this.score*3, 25, 10);
     },
+    
+    progressbar_lose:function(liveimg){
+        this.losebar.clear();
+        this.losebar = game.add.graphics(0, 0);
+        this.losebar.lineStyle(2, '0x000000');
+        this.losebar.beginFill('0x000000');
+        this.losebar.drawRoundedRect(1050, 50, 300, 27, 11);
+        this.losebar.endFill();
+        //<<<<<<< HEAD
+        if(this.liveimg==100){
+             this.liveimg=0;
+            this.losebar.clear();
+        this.losebar = game.add.graphics(0, 0);
+        this.losebar.lineStyle(2, '0x000000');
+        this.losebar.beginFill('0x000000');
+        this.losebar.drawRoundedRect(1050, 50, 300, 27, 11);
+        this.losebar.endFill();
+
+        }
+        this.losebar.beginFill('0x07E507', 1); //For drawing progress
+        this.losebar.drawRoundedRect(1052, 51, liveimg, 25, 10);
+    },
 
     update: function () {
-        this.liveimg = (this.coinGroup.children.filter(function (e) {return e.alive}).length) * 3;
-       this.progressbar_score();
-        //            this.progress.clear();
+                this.liveimg = (this.coinGroup.children.filter(function (e) {return e.alive}).length) * 3;
 
-    //        let random = Math.floor(Math.random() * 10) + 1; //need to modify
-    //        if (random == 5) {
-    //            this.progress.beginFill('0x999999', 1); //For drawing progress
-    //        }
+       this.progressbar_score();
+        this.progressbar_lose( this.liveimg);
         this.PowerUp();
         this.movePlayer();
         this.moveCoin();
