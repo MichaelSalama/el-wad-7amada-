@@ -50,14 +50,14 @@ var mainState = {
         this.progress = game.add.graphics(0, 0);
         this.progress.lineStyle(2, '0x000000');
         this.progress.beginFill('0x000000', 0);
-        this.progress.drawRoundedRect(10, 50, 300, 27, 10);
+        this.progress.drawRoundedRect(10, 50, 330, 27, 10);
         this.progress.endFill();
         this.progress.beginFill('0x999999', 1); //For drawing progress 
         
         this.losebar = game.add.graphics(0, 0);
         this.losebar.lineStyle(2, '0x000000');
         this.losebar.beginFill('0x000000', 0);
-        this.losebar.drawRoundedRect(1050, 50, 300, 27, 10);
+        this.losebar.drawRoundedRect(1050, 50, 330, 27, 10);
         this.losebar.endFill();
         this.losebar.beginFill('0x999999', 1); //For drawing progress
     },
@@ -71,6 +71,8 @@ var mainState = {
         this.dogAppeared = false;
         this.dogCounter = 0;
         this.score = 0;
+        this.score1 = 7;
+        this.lose = 7;
         this.anger = 0; // to calculate om 7amada anger!
         this.jumpCounter=0;
         this.GBoneTaken=false;
@@ -178,21 +180,21 @@ var mainState = {
         this.progress = game.add.graphics(0, 0);
         this.progress.lineStyle(2, '0x000000');
         this.progress.beginFill('0x000000');
-        this.progress.drawRoundedRect(10, 50, 300, 27, 11);
+        this.progress.drawRoundedRect(10, 50, 330, 27, 11);
         this.progress.endFill();
         //<<<<<<< HEAD
-        if(this.score==100){
-             this.score=0;
+        if(this.score1==107){
+             this.score1=7;
             this.progress.clear();
         this.progress = game.add.graphics(0, 0);
         this.progress.lineStyle(2, '0x000000');
         this.progress.beginFill('0x000000');
-        this.progress.drawRoundedRect(10, 50, 300, 27, 11);
+        this.progress.drawRoundedRect(10, 50, 330, 27, 11);
         this.progress.endFill();
 
         }
         this.progress.beginFill('0x07E507', 1); //For drawing progress
-        this.progress.drawRoundedRect(12, 51, this.score*3, 25, 10);
+        this.progress.drawRoundedRect(12, 51, this.score1*3, 25, 10);
     },
     
     progressbar_lose:function(liveimg){
@@ -338,6 +340,7 @@ var mainState = {
 
                 //this.coinGroup.children[i].kill();
                 this.score += 1;
+                this.score1 += 1;
                 this.scoreText.text = 'Score: ' + this.score;
                 this.coinGroup.children[i].body.touching.down = false;
                 rand = Math.ceil(Math.random() * 1750) + 500;
