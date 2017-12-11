@@ -18,6 +18,15 @@ var mainMenuState = {
     },
 
     create: function () {
+         this.startMenuBG = game.add.sprite(675, 400, 'building');
+        this.startMenuBG.anchor.setTo(0.5, 0.5);
+        this.startMenuBG.height=820;
+        this.startMenuBG.width = 1380;
+        
+        game.scale.pageAlignHorizontally = true;
+        game.scale.pageAlignVertically = true;
+
+        
         this.createButton(game, "7amada", game.world.centerX, game.world.centerY - 50, 300, 100, function () {
             //this.state.start('video');
             this.state.start('main');
@@ -206,34 +215,42 @@ var mainState = {
 
     },
     PowerUp: function () {
-    var random = Math.ceil(Math.random() * 100000) + 1;
-    this.GBone.angle += 1;
-    if (random == 3 && this.GBone.body.y == -150) {
-    random = Math.floor(Math.random() * (600 - 225 + 1) + 500);
-    this.GBone.body.x = random;
-    this.GBone.body.y = 0;
-    this.boneSpeed = Math.ceil(Math.random() * 350) + 200;
-    this.GBone.body.velocity.y = this.boneSpeed;
-}
-if (game.physics.arcade.overlap(this.player, this.GBone)) {
-    this.GBoneTaken = true;
-    this.GBoneCounter += 1;
-    this.GBone.body.y = -300;
-    this.GBone.body.velocity.y = 0;
-}
-if (this.GBoneCounter != 0) {
-    this.GBoneCounter += 1;
-}
-if (this.GBoneCounter == 300) {
-    this.GBoneTaken = false;
-    this.GBoneCounter = 0;
-    this.GBone.body.y = -150;
-}
-if (this.GBone.body.y > 700) {
-    this.GBone.body.y = -150;
-    this.GBone.body.velocity.y = 0;
-}
-},
+        var random = Math.ceil(Math.random() * 10000) + 1;
+        this.GBone.angle += 1;
+        if (random == 3 && this.GBone.body.y == -150) {
+            random = Math.floor(Math.random() * ( 2) +1);
+            if(random==1)
+            {
+                this.GBone.body.x = 50;
+            }
+            else
+            {
+                this.GBone.body.x = 1200;
+            }
+
+            this.GBone.body.y = 0;
+            this.boneSpeed = Math.ceil(Math.random() * 350) + 200;
+            this.GBone.body.velocity.y = this.boneSpeed;
+        }
+        if (game.physics.arcade.overlap(this.player, this.GBone)) {
+            this.GBoneTaken = true;
+            this.GBoneCounter += 1;
+            this.GBone.body.y = -300;
+            this.GBone.body.velocity.y = 0;
+        }
+        if (this.GBoneCounter != 0) {
+            this.GBoneCounter += 1;
+        }
+        if (this.GBoneCounter == 300) {
+            this.GBoneTaken = false;
+            this.GBoneCounter = 0;
+            this.GBone.body.y = -150;
+        }
+        if (this.GBone.body.y > 700) {
+            this.GBone.body.y = -150;
+            this.GBone.body.velocity.y = 0;
+        }
+    },
 
     movePlayer: function () {
         this.player.x = game.input.mousePointer.x;
@@ -291,37 +308,37 @@ if (this.GBone.body.y > 700) {
 
     },
 
-        moveCoin: function () {
+    moveCoin: function () {
 
-            for (var i = 0, len = this.coinGroup.children.length; i < len; i++) {
+        for (var i = 0, len = this.coinGroup.children.length; i < len; i++) {
 
 
-                //changed some stuff here so that if a coin has collided with hamada or reached bottom
-                //it reappears on the top and it's speed is random generated
-                if (game.physics.arcade.overlap(this.player, this.coinGroup.children[i])) {
+            //changed some stuff here so that if a coin has collided with hamada or reached bottom
+            //it reappears on the top and it's speed is random generated
+            if (game.physics.arcade.overlap(this.player, this.coinGroup.children[i])) {
 
-                    //this.coinGroup.children[i].kill();
-                    this.score += 1;
-                    this.scoreText.text = 'Score: ' + this.score;
-                    this.coinGroup.children[i].body.touching.down = false;
-                    rand = Math.ceil(Math.random() * 1750) + 500;
-                    this.coinGroup.children[i].x = rand;
-                    this.coinGroup.children[i].y = 370;
-                    this.speed = Math.ceil(Math.random() * 350) + 200;
-                    this.coinGroup.children[i].body.velocity.y = this.speed;
-                }
-                if (this.coinGroup.children[i].body.y > 700) {
-                    //  this.coinGroup.children[i].kill();
-                    this.angerCounter += 1;
-                    rand = Math.ceil(Math.random() * 1750) + 500;   
-                    this.coinGroup.children[i].x = rand;
-                    this.coinGroup.children[i].y = 370;
-                    this.speed = Math.ceil(Math.random() * 350) + 200;
-                    this.coinGroup.children[i].body.velocity.y = this.speed;
-                }
+                //this.coinGroup.children[i].kill();
+                this.score += 1;
+                this.scoreText.text = 'Score: ' + this.score;
+                this.coinGroup.children[i].body.touching.down = false;
+                rand = Math.ceil(Math.random() * 1750) + 500;
+                this.coinGroup.children[i].x = rand;
+                this.coinGroup.children[i].y = 370;
+                this.speed = Math.ceil(Math.random() * 350) + 200;
+                this.coinGroup.children[i].body.velocity.y = this.speed;
             }
+            if (this.coinGroup.children[i].body.y > 700) {
+                //  this.coinGroup.children[i].kill();
+                this.angerCounter += 1;
+                rand = Math.ceil(Math.random() * 1750) + 500;   
+                this.coinGroup.children[i].x = rand;
+                this.coinGroup.children[i].y = 370;
+                this.speed = Math.ceil(Math.random() * 350) + 200;
+                this.coinGroup.children[i].body.velocity.y = this.speed;
+            }
+        }
 
-        },
+    },
 };
 
 // state for video 
@@ -350,6 +367,11 @@ var endMenuState = {
 
     create: function () {
         //create end statment
+        this.EndMenuState = game.add.sprite(675, 400, 'building');
+        this.EndMenuState.anchor.setTo(0.5, 0.5);
+        this.EndMenuState.height=820;
+        this.EndMenuState.width = 1380;
+
         this.endStatement = game.add.text(500, 150, 'Y5aybak ya 7amada!', {
             fontFamily: 'Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif',
             fontSize: '32px',
