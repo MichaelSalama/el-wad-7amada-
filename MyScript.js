@@ -18,10 +18,21 @@ var mainMenuState = {
     },
 
     create: function () {
+<<<<<<< HEAD
         this.building = game.add.sprite(675, 400, 'building');
         this.building.anchor.setTo(0.5, 0.5);
         this.building.height = 820;
         this.building.width = 1380;
+=======
+        this.startMenuBG = game.add.sprite(675, 400, 'building');
+        this.startMenuBG.anchor.setTo(0.5, 0.5);
+        this.startMenuBG.height=820;
+        this.startMenuBG.width = 1380;
+
+        game.scale.pageAlignHorizontally = true;
+        game.scale.pageAlignVertically = true;
+
+>>>>>>> 836ae50d58749652a5970fed0c482a7e309560be
 
         this.createButton(game, "7amada", game.world.centerX, game.world.centerY - 50, 300, 100, function () {
             //this.state.start('video');
@@ -61,9 +72,16 @@ var mainState = {
         this.progress = game.add.graphics(0, 0);
         this.progress.lineStyle(2, '0x000000');
         this.progress.beginFill('0x000000', 0);
-        this.progress.drawRoundedRect(10, 50, 300, 27, 10);
+        this.progress.drawRoundedRect(10, 50, 330, 27, 10);
         this.progress.endFill();
-        this.progress.beginFill('0x999999', 1); //For drawing progress
+        this.progress.beginFill('0x999999', 1); //For drawing progress 
+
+        this.losebar = game.add.graphics(0, 0);
+        this.losebar.lineStyle(2, '0x000000');
+        this.losebar.beginFill('0x000000', 0);
+        this.losebar.drawRoundedRect(1050, 50, 300, 27, 10);
+        this.losebar.endFill();
+        this.losebar.beginFill('0x999999', 1); //For drawing progress
     },
 
     create: function () {
@@ -74,6 +92,8 @@ var mainState = {
         this.dogAppeared = false;
         this.dogCounter = 0;
         this.score = 0;
+        this.score1 = 7;
+        this.lose = 9;
         this.anger = 0; // to calculate om 7amada anger!
         this.jumpCounter = 0;
         this.GBoneTaken = false;
@@ -153,7 +173,7 @@ var mainState = {
         });
 
         //create anger 
-        this.angerText = game.add.text(500, 16, 'Anger: 0', {
+        this.angerText = game.add.text(1050, 16, 'Anger: 0', {
             fontSize: '32px',
             fill: '#000'
         });
@@ -163,32 +183,53 @@ var mainState = {
         this.dogBarking = game.add.audio('dogbarking');
         game.sound.setDecodedCallback([this.soundTrack, this.dogBarking], this.StartSound, this);
     },
-    progressbar_score: function () {
+    progressbar_score:function(){
         this.progress.clear();
         this.progress = game.add.graphics(0, 0);
         this.progress.lineStyle(2, '0x000000');
         this.progress.beginFill('0x000000');
-        this.progress.drawRoundedRect(10, 50, 300, 27, 11);
+        this.progress.drawRoundedRect(10, 50, 330, 27, 11);
         this.progress.endFill();
-
-        if (this.score < 20)
-            this.progress.beginFill('0xFF0000', 1);
-        if (this.score <= 50 && this.score >= 20)
-            this.progress.beginFill('0xFFFF00', 1);
-        if (this.score > 50)
-            this.progress.beginFill('0x07E507', 1); //For drawing progress
-        if (this.score == 100) {
+        //<<<<<<< HEAD
+        if(this.score1==107){
+            this.score1=7;
+            this.progress.clear();
+            this.progress = game.add.graphics(0, 0);
+            this.progress.lineStyle(2, '0x000000');
+            this.progress.beginFill('0x000000');
+            this.progress.drawRoundedRect(10, 50, 330, 27, 11);
+            this.progress.endFill();
 
         }
+        this.progress.beginFill('0x07E507', 1); //For drawing progress
+        this.progress.drawRoundedRect(12, 51, this.score1*3, 25, 10);
+    },
+     progressbar_lose:function(){
+        this.losebar.clear();
+        this.losebar = game.add.graphics(0, 0);
+        this.losebar.lineStyle(2, '0x000000');
+        this.losebar.beginFill('0x000000');
+        this.losebar.drawRoundedRect(1050, 50, 300, 27, 11);
+        this.losebar.endFill();
+        //<<<<<<< HEAD
+        if(this.lose==150){
+        this.state.start('end');
+        this.lose=7;
+        this.losebar.clear();
+        this.losebar = game.add.graphics(0, 0);
+        this.losebar.lineStyle(2, '0x000000');
+        this.losebar.beginFill('0x000000');
+        this.losebar.drawRoundedRect(1050, 50, 300, 27, 11);
+        this.losebar.endFill();
 
-        this.progress.drawRoundedRect(12, 51, this.score * 3, 25, 10);
+        }
+        this.losebar.beginFill('0xff0000', 1); //For drawing progress
+        this.losebar.drawRoundedRect(1052, 51, this.lose*2, 25, 10);
     },
 
     update: function () {
-        this.liveimg = (this.coinGroup.children.filter(function (e) {
-            return e.alive
-        }).length) * 3;
         this.progressbar_score();
+        this.progressbar_lose();
         this.PowerUp();
         this.movePlayer();
         this.moveCoin();
@@ -210,11 +251,27 @@ var mainState = {
 
     },
     PowerUp: function () {
+<<<<<<< HEAD
         var random = Math.ceil(Math.random() * 100000) + 1;
         this.GBone.angle += 1;
         if (random == 3 && this.GBone.body.y == -150) {
             random = Math.floor(Math.random() * (600 - 225 + 1) + 500);
             this.GBone.body.x = random;
+=======
+        var random = Math.ceil(Math.random() * 10000) + 1;
+        this.GBone.angle += 1;
+        if (random == 3 && this.GBone.body.y == -150) {
+            random = Math.floor(Math.random() * ( 2) +1);
+            if(random==1)
+            {
+                this.GBone.body.x = 50;
+            }
+            else
+            {
+                this.GBone.body.x = 1200;
+            }
+
+>>>>>>> 836ae50d58749652a5970fed0c482a7e309560be
             this.GBone.body.y = 0;
             this.boneSpeed = Math.ceil(Math.random() * 350) + 200;
             this.GBone.body.velocity.y = this.boneSpeed;
@@ -262,8 +319,9 @@ var mainState = {
             this.dogAppeared = true;
             this.dog.scale.setTo(-0.5, 0.5);
             this.dogBarking.play();
-            this.anger += 1;
-            this.angerText.text = 'Anger: ' + this.anger;
+            this.anger += 5;
+            this.lose+=this.anger;
+            this.angerText.text = 'Anger: ' + this.anger/5;
         }
 
         if (this.player.body.x < 170 && this.player.body.x > 140 && this.dogCounter == 0 && this.GBoneTaken == false) {
@@ -271,13 +329,14 @@ var mainState = {
             this.dogAppeared = true;
             this.dog.scale.setTo(0.5, 0.5);
             this.dogBarking.play();
-            this.anger += 1;
-            this.angerText.text = 'Anger: ' + this.anger;
+            this.anger += 5;
+            this.lose+=this.anger;
+            this.angerText.text = 'Anger: ' + this.anger/5;
         }
 
         if (this.dogAppeared) {
             //check anger condition!!
-            if (this.anger === 5) {
+            if (this.anger === 25) {
                 this.soundTrack.stop();
                 this.state.start('end');
             }
@@ -306,6 +365,10 @@ var mainState = {
 
                 //this.coinGroup.children[i].kill();
                 this.score += 1;
+<<<<<<< HEAD
+=======
+                this.score1+=1;
+>>>>>>> 836ae50d58749652a5970fed0c482a7e309560be
                 this.scoreText.text = 'Score: ' + this.score;
                 this.coinGroup.children[i].body.touching.down = false;
                 rand = Math.ceil(Math.random() * 1750) + 500;
@@ -317,7 +380,12 @@ var mainState = {
             if (this.coinGroup.children[i].body.y > 700) {
                 //  this.coinGroup.children[i].kill();
                 this.angerCounter += 1;
+<<<<<<< HEAD
                 rand = Math.ceil(Math.random() * 1750) + 500;
+=======
+                this.lose+=1;
+                rand = Math.ceil(Math.random() * 1750) + 500;   
+>>>>>>> 836ae50d58749652a5970fed0c482a7e309560be
                 this.coinGroup.children[i].x = rand;
                 this.coinGroup.children[i].y = 370;
                 this.speed = Math.ceil(Math.random() * 350) + 200;
@@ -358,6 +426,11 @@ var endMenuState = {
         this.building.height = 820;
         this.building.width = 1380;
         //create end statment
+        this.EndMenuState = game.add.sprite(675, 400, 'building');
+        this.EndMenuState.anchor.setTo(0.5, 0.5);
+        this.EndMenuState.height=820;
+        this.EndMenuState.width = 1380;
+
         this.endStatement = game.add.text(500, 150, 'Y5aybak ya 7amada!', {
             fontFamily: 'Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif',
             fontSize: '32px',
@@ -384,7 +457,10 @@ var endMenuState = {
         txt.anchor.setTo(0.5, 0.5);
     },
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 836ae50d58749652a5970fed0c482a7e309560be
 var creditsState = {
     preload: function () {},
     create: function () {
@@ -471,9 +547,12 @@ var multiState = {
         this.omHamada.anchor.setTo(0.5, 0.5);
         this.omHamada.scale.set(0.3, 0.3);
         this.omHamada.y = 220;
+<<<<<<< HEAD
         //this.building.height=820;
         //this.building.width = 1380;
 
+=======
+>>>>>>> 836ae50d58749652a5970fed0c482a7e309560be
 
         //creating Golden Bone
         this.GBone = game.add.sprite(675, -100, 'GBone');
@@ -496,7 +575,10 @@ var multiState = {
         this.player2.scale.set(0.5, 0.5);
         game.physics.arcade.enable(this.player2);
         this.player2.body.collideWorldBounds = true;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 836ae50d58749652a5970fed0c482a7e309560be
         //coin group
         // changed coin group instead of random generating an endless array 
         // i made a group of 10 elements that loop
@@ -598,7 +680,10 @@ var multiState = {
         }
 
     },
+<<<<<<< HEAD
 
+=======
+>>>>>>> 836ae50d58749652a5970fed0c482a7e309560be
     PowerUp: function () {
         var random = Math.ceil(Math.random() * 100000) + 1;
         this.GBone.angle += 1;
@@ -629,7 +714,7 @@ var multiState = {
         }
     },
 
-    movePlayer: function () {
+   movePlayer: function () {
         this.player.x = game.input.mousePointer.x;
         cursor = game.input.keyboard.createCursorKeys();
 
@@ -676,6 +761,7 @@ var multiState = {
             this.dogBarking.play();
             this.anger += 1;
             this.angerText.text = 'Player1\'s Anger: ' + this.anger;
+<<<<<<< HEAD
         }
 
         if (this.player2.body.x < 1130 && this.player2.body.x > 1110 && this.dogCounter == 0 && this.GBoneTaken == false) {
@@ -687,6 +773,19 @@ var multiState = {
             this.angerText2.text = 'Player2\'s Anger: ' + this.anger;
         }
 
+=======
+        }
+
+        if (this.player2.body.x < 1130 && this.player2.body.x > 1110 && this.dogCounter == 0 && this.GBoneTaken == false) {
+            this.dog.x = 1270;
+            this.dogAppeared = true;
+            this.dog.scale.setTo(-0.5, 0.5);
+            this.dogBarking.play();
+            this.anger2 += 1;
+            this.angerText2.text = 'Player2\'s Anger: ' + this.anger;
+        }
+
+>>>>>>> 836ae50d58749652a5970fed0c482a7e309560be
         if (this.player.body.x < 170 && this.player.body.x > 140 && this.dogCounter == 0 && this.GBoneTaken == false) {
             this.dog.x = 100;
             this.dogAppeared = true;
@@ -719,6 +818,7 @@ var multiState = {
             }
         }
     },
+
 
     moveCoin: function () {
 
