@@ -18,21 +18,24 @@ var mainMenuState = {
     },
 
     create: function () {
-         this.startMenuBG = game.add.sprite(675, 400, 'building');
+        this.startMenuBG = game.add.sprite(675, 400, 'building');
         this.startMenuBG.anchor.setTo(0.5, 0.5);
         this.startMenuBG.height=820;
         this.startMenuBG.width = 1380;
-        
+
         game.scale.pageAlignHorizontally = true;
         game.scale.pageAlignVertically = true;
 
-        
+
         this.createButton(game, "7amada", game.world.centerX, game.world.centerY - 50, 300, 100, function () {
             //this.state.start('video');
             this.state.start('main');
         });
         this.createButton(game, "a7med & 7amda", game.world.centerX, game.world.centerY + 50, 300, 100, function () {
             this.state.start('multi');
+        });
+        this.createButton(game, "Credits", game.world.centerX, game.world.centerY + 300, 300, 100, function () {
+            this.state.start('credits');
         });
     },
 
@@ -61,9 +64,16 @@ var mainState = {
         this.progress = game.add.graphics(0, 0);
         this.progress.lineStyle(2, '0x000000');
         this.progress.beginFill('0x000000', 0);
-        this.progress.drawRoundedRect(10, 50, 300, 27, 10);
+        this.progress.drawRoundedRect(10, 50, 330, 27, 10);
         this.progress.endFill();
-        this.progress.beginFill('0x999999', 1); //For drawing progress
+        this.progress.beginFill('0x999999', 1); //For drawing progress 
+
+        this.losebar = game.add.graphics(0, 0);
+        this.losebar.lineStyle(2, '0x000000');
+        this.losebar.beginFill('0x000000', 0);
+        this.losebar.drawRoundedRect(1050, 50, 300, 27, 10);
+        this.losebar.endFill();
+        this.losebar.beginFill('0x999999', 1); //For drawing progress
     },
 
     create: function () {
@@ -74,6 +84,8 @@ var mainState = {
         this.dogAppeared = false;
         this.dogCounter = 0;
         this.score = 0;
+        this.score1 = 7;
+        this.lose = 9;
         this.anger = 0; // to calculate om 7amada anger!
         this.jumpCounter = 0;
         this.GBoneTaken = false;
@@ -153,7 +165,7 @@ var mainState = {
         });
 
         //create anger 
-        this.angerText = game.add.text(500, 16, 'Anger: 0', {
+        this.angerText = game.add.text(1050, 16, 'Anger: 0', {
             fontSize: '32px',
             fill: '#000'
         });
@@ -163,32 +175,53 @@ var mainState = {
         this.dogBarking = game.add.audio('dogbarking');
         game.sound.setDecodedCallback([this.soundTrack, this.dogBarking], this.StartSound, this);
     },
-    progressbar_score: function () {
+    progressbar_score:function(){
         this.progress.clear();
         this.progress = game.add.graphics(0, 0);
         this.progress.lineStyle(2, '0x000000');
         this.progress.beginFill('0x000000');
-        this.progress.drawRoundedRect(10, 50, 300, 27, 11);
+        this.progress.drawRoundedRect(10, 50, 330, 27, 11);
         this.progress.endFill();
-
-        if (this.score < 20)
-            this.progress.beginFill('0xFF0000', 1);
-        if (this.score <= 50 && this.score >= 20)
-            this.progress.beginFill('0xFFFF00', 1);
-        if (this.score > 50)
-            this.progress.beginFill('0x07E507', 1); //For drawing progress
-        if (this.score == 100) {
+        //<<<<<<< HEAD
+        if(this.score1==107){
+            this.score1=7;
+            this.progress.clear();
+            this.progress = game.add.graphics(0, 0);
+            this.progress.lineStyle(2, '0x000000');
+            this.progress.beginFill('0x000000');
+            this.progress.drawRoundedRect(10, 50, 330, 27, 11);
+            this.progress.endFill();
 
         }
+        this.progress.beginFill('0x07E507', 1); //For drawing progress
+        this.progress.drawRoundedRect(12, 51, this.score1*3, 25, 10);
+    },
+     progressbar_lose:function(){
+        this.losebar.clear();
+        this.losebar = game.add.graphics(0, 0);
+        this.losebar.lineStyle(2, '0x000000');
+        this.losebar.beginFill('0x000000');
+        this.losebar.drawRoundedRect(1050, 50, 300, 27, 11);
+        this.losebar.endFill();
+        //<<<<<<< HEAD
+        if(this.lose==150){
+        this.state.start('end');
+        this.lose=7;
+        this.losebar.clear();
+        this.losebar = game.add.graphics(0, 0);
+        this.losebar.lineStyle(2, '0x000000');
+        this.losebar.beginFill('0x000000');
+        this.losebar.drawRoundedRect(1050, 50, 300, 27, 11);
+        this.losebar.endFill();
 
-        this.progress.drawRoundedRect(12, 51, this.score * 3, 25, 10);
+        }
+        this.losebar.beginFill('0xff0000', 1); //For drawing progress
+        this.losebar.drawRoundedRect(1052, 51, this.lose*2, 25, 10);
     },
 
     update: function () {
-        this.liveimg = (this.coinGroup.children.filter(function (e) {
-            return e.alive
-        }).length) * 3;
         this.progressbar_score();
+        this.progressbar_lose();
         this.PowerUp();
         this.movePlayer();
         this.moveCoin();
@@ -275,8 +308,9 @@ var mainState = {
             this.dogAppeared = true;
             this.dog.scale.setTo(-0.5, 0.5);
             this.dogBarking.play();
-            this.anger += 1;
-            this.angerText.text = 'Anger: ' + this.anger;
+            this.anger += 5;
+            this.lose+=this.anger;
+            this.angerText.text = 'Anger: ' + this.anger/5;
         }
 
         if (this.player.body.x < 170 && this.player.body.x > 140 && this.dogCounter == 0 && this.GBoneTaken == false) {
@@ -284,13 +318,14 @@ var mainState = {
             this.dogAppeared = true;
             this.dog.scale.setTo(0.5, 0.5);
             this.dogBarking.play();
-            this.anger += 1;
-            this.angerText.text = 'Anger: ' + this.anger;
+            this.anger += 5;
+            this.lose+=this.anger;
+            this.angerText.text = 'Anger: ' + this.anger/5;
         }
 
         if (this.dogAppeared) {
             //check anger condition!!
-            if (this.anger === 5) {
+            if (this.anger === 25) {
                 this.soundTrack.stop();
                 this.state.start('end');
             }
@@ -319,6 +354,7 @@ var mainState = {
 
                 //this.coinGroup.children[i].kill();
                 this.score += 1;
+                this.score1+=1;
                 this.scoreText.text = 'Score: ' + this.score;
                 this.coinGroup.children[i].body.touching.down = false;
                 rand = Math.ceil(Math.random() * 1750) + 500;
@@ -330,6 +366,7 @@ var mainState = {
             if (this.coinGroup.children[i].body.y > 700) {
                 //  this.coinGroup.children[i].kill();
                 this.angerCounter += 1;
+                this.lose+=1;
                 rand = Math.ceil(Math.random() * 1750) + 500;   
                 this.coinGroup.children[i].x = rand;
                 this.coinGroup.children[i].y = 370;
@@ -398,6 +435,40 @@ var endMenuState = {
         txt.anchor.setTo(0.5, 0.5);
     },
 }
+var creditsState = {
+    preload: function () {},
+    create: function () {
+        this.building = game.add.sprite(675, 400, 'building');
+        this.building.anchor.setTo(0.5, 0.5);
+        this.building.height = 820;
+        this.building.width = 1380;
+
+        this.creditsState = game.add.text(550, 100,'Special Thanks to Artist: \n' + 'AYA NASSER\n\n\n\n'+ 'Developed By: \n' + 'Ahmed Hafez \n' + 'Abdelrahman Atwan \n' + 'Michael Fawzy' , {
+            fontFamily: 'Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif',
+            fontSize: '32px',
+            fill: '#f0f'
+        });
+
+        this.createButton(game, "Back", game.world.centerX, game.world.centerY + 300, 300, 100, function () {
+            //this.state.start('video');
+            this.state.start('menu');
+        });
+    },
+    createButton: function (game, string, x, y, w, h, callback) {
+        var button1 = game.add.button(x, y, 'aqua', callback, this, 2, 1, 0);
+        button1.anchor.setTo(0.5, 0.5);
+        button1.width = w;
+        button1.height = h;
+
+        var txt = game.add.text(button1.x, button1.y, string, {
+            font: "14px arial",
+            fill: "#fff",
+            align: "center"
+        });
+        txt.anchor.setTo(0.5, 0.5);
+    },
+}
+
 // multistate for game
 var multiState = {
 
@@ -412,16 +483,22 @@ var multiState = {
 
     create: function () {
         this.angerCounter = 0;
+        this.angerCounter2 = 0;
         this.speed = 700;
         var rand;
         var coinGroup;
         this.dogAppeared = false;
         this.dogCounter = 0;
         this.score = 0;
+        this.score2 = 0;
         this.anger = 0; // to calculate om 7amada anger!
+        this.anger2 = 0;
         this.jumpCounter = 0;
+        this.jumpCounter2 = 0;
         this.GBoneTaken = false;
         this.GBoneCounter = 0;
+        this.shouldOmHamadaMoveLeft = false;
+
 
         game.scale.fullScreenScaleMode = Phaser.ScaleManager.EXACT_FIT;
         game.scale.startFullScreen(false);
@@ -436,7 +513,13 @@ var multiState = {
         // create Building
         this.building = game.add.sprite(675, 400, 'building');
         this.building.anchor.setTo(0.5, 0.5);
-        this.building.width = 900;
+        this.building.height = 820;
+        this.building.width = 1380;
+
+        this.omHamada = game.add.sprite(675, 400, 'omHamada');
+        this.omHamada.anchor.setTo(0.5, 0.5);
+        this.omHamada.scale.set(0.3, 0.3);
+        this.omHamada.y = 220;
 
         //creating Golden Bone
         this.GBone = game.add.sprite(675, -100, 'GBone');
@@ -446,13 +529,19 @@ var multiState = {
         this.GBone.width = 100;
         this.GBone.height = 100;
 
-        //Create Player
-        this.player = game.add.sprite(650, 700, 'player');
+        //Create Player1 & player2
+        this.player = game.add.sprite(650, 900, 'player');
         this.player.anchor.setTo(0.5, 0.5);
+        this.player.scale.set(0.5, 0.5);
         //player.scale.setTo(0.5, 0.5);
         game.physics.arcade.enable(this.player);
         this.player.body.collideWorldBounds = true;
 
+        this.player2 = game.add.sprite(550, 700, 'player');
+        this.player2.anchor.setTo(0.5, 0.5);
+        this.player2.scale.set(0.5, 0.5);
+        game.physics.arcade.enable(this.player2);
+        this.player2.body.collideWorldBounds = true;
         //coin group
         // changed coin group instead of random generating an endless array 
         // i made a group of 10 elements that loop
@@ -478,14 +567,22 @@ var multiState = {
         this.dog.anchor.setTo(0.5, 0.5);
         this.dog.scale.setTo(-0.5, 0.5);
 
-        //create score
+        //create score1 & score2
         this.scoreText = game.add.text(16, 16, 'score: 0', {
             fontSize: '32px',
             fill: '#000'
         });
+        this.scoreText2 = game.add.text(1000, 16, 'Player2\'s Score: 0', {
+            fontSize: '32px',
+            fill: '#000'
+        });
 
-        //create anger 
-        this.angerText = game.add.text(500, 16, 'Anger: 0', {
+        //create anger 1 & 2
+        this.angerText = game.add.text(16, 100, 'Player1\'s Anger: 0', {
+            fontSize: '32px',
+            fill: '#000'
+        });
+        this.angerText2 = game.add.text(1000, 100, 'Player2\'s Anger: 0', {
             fontSize: '32px',
             fill: '#000'
         });
@@ -524,9 +621,24 @@ var multiState = {
         this.PowerUp();
         this.movePlayer();
         this.moveCoin();
+        this.MoveOmHamada();
     },
+
     StartSound: function () {
         this.soundTrack.loopFull();
+    },
+
+    MoveOmHamada: function () {
+        if (this.omHamada.x < 1000 && this.shouldOmHamadaMoveLeft == false) {
+            this.omHamada.x += 5;
+        } else if (this.omHamada.x > 360) {
+            this.shouldOmHamadaMoveLeft = true;
+            this.omHamada.x -= 5;
+            if (this.omHamada.x - 5 < 360) {
+                this.shouldOmHamadaMoveLeft = false;
+            }
+        }
+
     },
     PowerUp: function () {
         var random = Math.ceil(Math.random() * 100000) + 1;
@@ -558,9 +670,29 @@ var multiState = {
         }
     },
 
-    movePlayer: function () {
+   movePlayer: function () {
         this.player.x = game.input.mousePointer.x;
-        //Jump handling
+        cursor = game.input.keyboard.createCursorKeys();
+
+        //player2 movement
+        if (cursor.left.isDown) {
+            this.player2.body.velocity.x = -300;
+        } else if (cursor.right.isDown) {
+            this.player2.body.velocity.x = 300;
+        } else {
+            this.player2.body.velocity.x = 0;
+        }
+        //jumphandling for player2
+        if (cursor.up.isDown && this.jumpCounter2 == 0) {
+            this.player2.body.velocity.y = -300;
+            this.jumpCounter2++;
+        } else if (this.jumpCounter2 == 30) {
+            this.jumpCounter2 = 0;
+            this.player2.body.velocity.y = 200;
+        } else if (this.jumpCounter2 != 0) {
+            this.jumpCounter2++;
+        }
+        //Jump handling for palayer1
         if (this.Jump.isDown && this.jumpCounter == 0) {
             this.player.body.velocity.y = -300;
             this.jumpCounter++;
@@ -575,24 +707,43 @@ var multiState = {
         if (this.player.body.blocked.left)
             this.player.body.velocity.x = 0;
 
-        if (this.player.body.x < 1130 && this.player.body.x > 1115 && this.dogCounter == 0 && this.GBoneTaken == false) {
-            this.dog.x = 1150;
+        if (this.player2.body.blocked.left)
+            this.player2.body.velocity.x = 0;
+
+        if (this.player.body.x < 1130 && this.player.body.x > 1110 && this.dogCounter == 0 && this.GBoneTaken == false) {
+            this.dog.x = 1270;
             this.dogAppeared = true;
             this.dog.scale.setTo(-0.5, 0.5);
             this.dogBarking.play();
             this.anger += 1;
-            this.angerText.text = 'Anger: ' + this.anger;
+            this.angerText.text = 'Player1\'s Anger: ' + this.anger;
         }
 
-        if (this.player.body.x < 230 && this.player.body.x > 210 && this.dogCounter == 0 && this.GBoneTaken == false) {
-            this.dog.x = 150;
+        if (this.player2.body.x < 1130 && this.player2.body.x > 1110 && this.dogCounter == 0 && this.GBoneTaken == false) {
+            this.dog.x = 1270;
+            this.dogAppeared = true;
+            this.dog.scale.setTo(-0.5, 0.5);
+            this.dogBarking.play();
+            this.anger2 += 1;
+            this.angerText2.text = 'Player2\'s Anger: ' + this.anger;
+        }
+
+        if (this.player.body.x < 170 && this.player.body.x > 140 && this.dogCounter == 0 && this.GBoneTaken == false) {
+            this.dog.x = 100;
             this.dogAppeared = true;
             this.dog.scale.setTo(0.5, 0.5);
             this.dogBarking.play();
             this.anger += 1;
-            this.angerText.text = 'Anger: ' + this.anger;
+            this.angerText.text = 'Player1\'s Anger: ' + this.anger;
         }
-
+        if (this.player2.body.x < 170 && this.player2.body.x > 140 && this.dogCounter == 0 && this.GBoneTaken == false) {
+            this.dog.x = 100;
+            this.dogAppeared = true;
+            this.dog.scale.setTo(0.5, 0.5);
+            this.dogBarking.play();
+            this.anger2 += 1;
+            this.angerText2.text = 'Player2\'s Anger: ' + this.anger;
+        }
         if (this.dogAppeared) {
             //check anger condition!!
             if (this.anger === 5) {
@@ -605,19 +756,34 @@ var multiState = {
                 this.dog.x = -150;
                 this.dogCounter = 0;
                 this.dogAppeared = false;
+
             }
         }
     },
 
+
     moveCoin: function () {
 
         for (var i = 0, len = this.coinGroup.children.length; i < len; i++) {
+
+
             //changed some stuff here so that if a coin has collided with hamada or reached bottom
             //it reappears on the top and it's speed is random generated
             if (game.physics.arcade.overlap(this.player, this.coinGroup.children[i])) {
                 //this.coinGroup.children[i].kill();
                 this.score += 1;
-                this.scoreText.text = 'Score: ' + this.score;
+                this.scoreText.text = 'Player1\'s Score: ' + this.score;
+                this.coinGroup.children[i].body.touching.down = false;
+                rand = Math.ceil(Math.random() * 1750) + 500;
+                this.coinGroup.children[i].x = rand;
+                this.coinGroup.children[i].y = 370;
+                this.speed = Math.ceil(Math.random() * 350) + 200;
+                this.coinGroup.children[i].body.velocity.y = this.speed;
+            }
+
+            if (game.physics.arcade.overlap(this.player2, this.coinGroup.children[i])) {
+                this.score2 += 1;
+                this.scoreText2.text = 'Player2\'s Score: ' + this.score2;
                 this.coinGroup.children[i].body.touching.down = false;
                 rand = Math.ceil(Math.random() * 1750) + 500;
                 this.coinGroup.children[i].x = rand;
@@ -625,9 +791,19 @@ var multiState = {
                 this.speed = Math.ceil(Math.random() * 350) + 200;
                 this.coinGroup.children[i].body.velocity.y = this.speed;
             }
+
             if (this.coinGroup.children[i].body.y > 700) {
                 //  this.coinGroup.children[i].kill();
                 this.angerCounter += 1;
+                rand = Math.ceil(Math.random() * 1750) + 500;
+                this.coinGroup.children[i].x = rand;
+                this.coinGroup.children[i].y = 370;
+                this.speed = Math.ceil(Math.random() * 350) + 200;
+                this.coinGroup.children[i].body.velocity.y = this.speed;
+            }
+
+            if (this.coinGroup.children[i].body.y > 700) {
+                this.angerCounter2 += 1;
                 rand = Math.ceil(Math.random() * 1750) + 500;
                 this.coinGroup.children[i].x = rand;
                 this.coinGroup.children[i].y = 0;
@@ -644,4 +820,5 @@ game.state.add('main', mainState);
 game.state.add('multi', multiState);
 game.state.add('video', videoState);
 game.state.add('end', endMenuState);
+game.state.add('credits',creditsState);
 game.state.start('menu');
