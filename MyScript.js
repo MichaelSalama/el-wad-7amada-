@@ -16,7 +16,7 @@ var mainMenuState = {
 
 
     },
-
+//comment
     create: function () {
         this.startMenuBG = game.add.sprite(675, 400, 'building');
         this.startMenuBG.anchor.setTo(0.5, 0.5);
