@@ -16,7 +16,7 @@ var mainMenuState = {
 
 
     },
-
+//comment
     create: function () {
 <<<<<<< HEAD
         this.building = game.add.sprite(675, 400, 'building');
