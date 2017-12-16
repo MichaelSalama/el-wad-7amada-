@@ -12,11 +12,12 @@ var mainMenuState = {
         game.load.image('aqua', 'assets/aqua.png');
         game.load.image('GBone', 'assets/Golden Bone.png');
         game.load.image('omHamada', 'assets/mother of hamada.png');
+        game.load.image('tarabzyn', 'assets/tarabzyn.png');
 
 
 
     },
-//comment
+    //comment
     create: function () {
         this.startMenuBG = game.add.sprite(675, 400, 'building');
         this.startMenuBG.anchor.setTo(0.5, 0.5);
@@ -38,7 +39,7 @@ var mainMenuState = {
             this.state.start('credits');
         });
     },
-    
+
 
     update: function () {},
 
@@ -92,6 +93,10 @@ var mainState = {
         this.GBoneTaken = false;
         this.GBoneCounter = 0;
         this.shouldOmHamadaMoveLeft = false;
+        this.startRandomEvent=false;
+        this.randomEventColumnNumber=0;
+        this.coinNumberThatDroppedInRandomEventSoFar=0;
+        this.CoinFlag=false;
 
 
         game.scale.fullScreenScaleMode = Phaser.ScaleManager.EXACT_FIT;
@@ -110,10 +115,15 @@ var mainState = {
         this.building.height = 820;
         this.building.width = 1380;
 
-        this.omHamada = game.add.sprite(675, 400, 'omHamada');
+        this.omHamada = game.add.sprite(675, 300, 'omHamada');
         this.omHamada.anchor.setTo(0.5, 0.5);
-        this.omHamada.scale.set(0.3, 0.3);
+        this.omHamada.scale.set(0.28, 0.28);
         this.omHamada.y = 220;
+
+        this.tarabzyn = game.add.sprite(675, 250, 'tarabzyn');
+        this.tarabzyn.anchor.setTo(0.5, 0.5);
+        //this.tarabzyn.height = 820;
+        //this.tarabzyn.width = 1380;
         //this.building.height=820;
         //this.building.width = 1380;
 
@@ -175,19 +185,34 @@ var mainState = {
         this.soundTrack = game.add.audio('soundtrack');
         this.dogBarking = game.add.audio('dogbarking');
         game.sound.setDecodedCallback([this.soundTrack, this.dogBarking], this.StartSound, this);
-    },
-    progressbar_score:function(){
-        this.progress.clear();
+
+        //initializing score bar
         this.progress = game.add.graphics(0, 0);
         this.progress.lineStyle(2, '0x000000');
         this.progress.beginFill('0x000000');
         this.progress.drawRoundedRect(10, 50, 330, 27, 11);
         this.progress.endFill();
-        //<<<<<<< HEAD
+
+        //initializing lose bar
+        this.losebar = game.add.graphics(0, 0);
+        this.losebar.lineStyle(2, '0x000000');
+        this.losebar.beginFill('0x000000');
+        this.losebar.drawRoundedRect(1050, 50, 300, 27, 11);
+        this.losebar.endFill();
+
+    },
+    progressbar_score:function(){
+
+        this.progress.clear();
+        //this.progress = game.add.graphics(0, 0);
+        this.progress.lineStyle(2, '0x000000');
+        this.progress.beginFill('0x000000');
+        this.progress.drawRoundedRect(10, 50, 330, 27, 11);
+        this.progress.endFill();
         if(this.score1==107){
             this.score1=7;
             this.progress.clear();
-            this.progress = game.add.graphics(0, 0);
+            //this.progress = game.add.graphics(0, 0);
             this.progress.lineStyle(2, '0x000000');
             this.progress.beginFill('0x000000');
             this.progress.drawRoundedRect(10, 50, 330, 27, 11);
@@ -197,23 +222,23 @@ var mainState = {
         this.progress.beginFill('0x07E507', 1); //For drawing progress
         this.progress.drawRoundedRect(12, 51, this.score1*3, 25, 10);
     },
-     progressbar_lose:function(){
+    progressbar_lose:function(){
         this.losebar.clear();
-        this.losebar = game.add.graphics(0, 0);
+        // this.losebar = game.add.graphics(0, 0);
         this.losebar.lineStyle(2, '0x000000');
         this.losebar.beginFill('0x000000');
         this.losebar.drawRoundedRect(1050, 50, 300, 27, 11);
         this.losebar.endFill();
         //<<<<<<< HEAD
         if(this.lose==150){
-        this.state.start('end');
-        this.lose=7;
-        this.losebar.clear();
-        this.losebar = game.add.graphics(0, 0);
-        this.losebar.lineStyle(2, '0x000000');
-        this.losebar.beginFill('0x000000');
-        this.losebar.drawRoundedRect(1050, 50, 300, 27, 11);
-        this.losebar.endFill();
+            this.state.start('end');
+            this.lose=7;
+            this.losebar.clear();
+            // this.losebar = game.add.graphics(0, 0);
+            this.losebar.lineStyle(2, '0x000000');
+            this.losebar.beginFill('0x000000');
+            this.losebar.drawRoundedRect(1050, 50, 300, 27, 11);
+            this.losebar.endFill();
 
         }
         this.losebar.beginFill('0xff0000', 1); //For drawing progress
@@ -341,33 +366,108 @@ var mainState = {
 
     moveCoin: function () {
 
-        for (var i = 0, len = this.coinGroup.children.length; i < len; i++) {
+        if((this.score%150==0 && this.score!=0)||this.startRandomEvent==true)
+        {
+            this.startRandomEvent=true;
+            if( this.CoinFlag==true ) 
+            {
 
+                this.randomEventColumnNumber++;
+                for (var i = 0, len = this.coinGroup.children.length; i < len; i++)
+                {
 
-            //changed some stuff here so that if a coin has collided with hamada or reached bottom
-            //it reappears on the top and it's speed is random generated
-            if (game.physics.arcade.overlap(this.player, this.coinGroup.children[i])) {
+                    this.coinGroup.children[i].x =this.randomEventColumnNumber*1000/5 +100*i; 
+                    this.coinGroup.children[i].y = 370;
+                    this.speed = 200;
+                    this.coinGroup.children[i].body.velocity.y = this.speed+(i*150);
 
-                //this.coinGroup.children[i].kill();
-                this.score += 1;
-                this.score1+=1;
-                this.scoreText.text = 'Score: ' + this.score;
-                this.coinGroup.children[i].body.touching.down = false;
-                rand = Math.ceil(Math.random() * 1750) + 500;
-                this.coinGroup.children[i].x = rand;
-                this.coinGroup.children[i].y = 370;
-                this.speed = Math.ceil(Math.random() * 350) + 200;
-                this.coinGroup.children[i].body.velocity.y = this.speed;
+                }
+                this.CoinFlag=false;
             }
-            if (this.coinGroup.children[i].body.y > 700) {
-                //  this.coinGroup.children[i].kill();
-                this.angerCounter += 1;
-                this.lose+=1;
-                rand = Math.ceil(Math.random() * 1750) + 500;   
-                this.coinGroup.children[i].x = rand;
-                this.coinGroup.children[i].y = 370;
-                this.speed = Math.ceil(Math.random() * 350) + 200;
-                this.coinGroup.children[i].body.velocity.y = this.speed;
+            for (var i = 0, len = this.coinGroup.children.length; i < len; i++)
+            {
+                if (game.physics.arcade.overlap(this.player, this.coinGroup.children[i])) {
+
+                    //this.coinGroup.children[i].body.touching.down = false;
+                    this.coinNumberThatDroppedInRandomEventSoFar++;
+                    if(this.coinNumberThatDroppedInRandomEventSoFar%10==0)
+                    {
+                        this.CoinFlag=true;
+
+                    }
+                    this.score += 1;
+                    this.scoreText.text = 'Score: ' + this.score;
+                    this.coinGroup.children[i].x=-150;                    this.coinGroup.children[i].y=-150;
+                    this.coinGroup.children[i].body.velocity.y=0;
+
+
+
+
+
+                }
+                if (this.coinGroup.children[i].body.y > 700) {
+                    this.coinNumberThatDroppedInRandomEventSoFar++;
+                    if(this.coinNumberThatDroppedInRandomEventSoFar%10==0)
+                    {
+                        this.CoinFlag=true;
+
+                    }
+                    //this.coinGroup.children[i].body.touching.down = false;
+                    this.coinGroup.children[i].x=-150;
+                    this.coinGroup.children[i].y=-150;
+                    this.coinGroup.children[i].body.velocity.y=0;
+
+                }
+
+            }
+            if(this.coinNumberThatDroppedInRandomEventSoFar>=50)
+            {
+                this.startRandomEvent=false;
+                this.randomEventColumnNumber=0;               this.coinNumberThatDroppedInRandomEventSoFar=0;
+                for (var i = 0, len = this.coinGroup.children.length; i < len; i++)
+                {
+
+                    rand = Math.ceil(Math.random() * 1750) + 500;
+                    this.coinGroup.children[i].x = rand;
+                    this.coinGroup.children[i].y = 370;
+                    this.speed = Math.ceil(Math.random() * 350) + 200;
+                    this.coinGroup.children[i].body.velocity.y = this.speed;
+
+                }
+            }
+
+        }
+        else
+        {
+            for (var i = 0, len = this.coinGroup.children.length; i < len; i++) {
+
+
+
+                //changed some stuff here so that if a coin has collided with hamada or reached bottom
+                //it reappears on the top and it's speed is random generated
+                if (game.physics.arcade.overlap(this.player, this.coinGroup.children[i])) {
+
+                    //this.coinGroup.children[i].kill();
+                    this.score += 1;
+                    this.score1+=1;
+                    this.scoreText.text = 'Score: ' + this.score;
+                    this.coinGroup.children[i].body.touching.down = false;
+                    rand = Math.ceil(Math.random() * 1750) + 500;
+                    this.coinGroup.children[i].x = rand;
+                    this.coinGroup.children[i].y = 370;
+                    this.speed = Math.ceil(Math.random() * 350) + 200;
+                    this.coinGroup.children[i].body.velocity.y = this.speed;
+                }
+                if (this.coinGroup.children[i].body.y > 700) {
+                    //  this.coinGroup.children[i].kill();
+                    this.angerCounter += 1;
+                    this.lose+=1;
+                    rand = Math.ceil(Math.random() * 1750) + 500;   
+                    this.coinGroup.children[i].x = rand;
+                    this.coinGroup.children[i].y = 370;
+                    this.speed = Math.ceil(Math.random() * 350) + 200;
+                    this.coinGroup.children[i].body.velocity.y = this.speed;
+                }
             }
         }
 
@@ -474,12 +574,7 @@ var multiState = {
 
     preload: function () {
 
-        this.progress = game.add.graphics(0, 0);
-        this.progress.lineStyle(2, '0x000000');
-        this.progress.beginFill('0x000000', 0);
-        this.progress.drawRoundedRect(10, 50, 300, 27, 10);
-        this.progress.endFill();
-        this.progress.beginFill('0x999999', 1); //For drawing progress
+
     },
 
     create: function () {
@@ -499,6 +594,9 @@ var multiState = {
         this.GBoneTaken = false;
         this.GBoneCounter = 0;
         this.shouldOmHamadaMoveLeft = false;
+        this.jumpForPlayer1Pressed=false;
+        this.jumpForPlayer2Pressed=false;
+
 
 
         game.scale.fullScreenScaleMode = Phaser.ScaleManager.EXACT_FIT;
@@ -537,12 +635,19 @@ var multiState = {
         //player.scale.setTo(0.5, 0.5);
         game.physics.arcade.enable(this.player);
         this.player.body.collideWorldBounds = true;
+        this.player.body.velocity.y =200;
+        this.player.body.checkCollision.down = false;
+        this.player.body.bounce.setTo(1, 0);
 
         this.player2 = game.add.sprite(550, 700, 'player');
         this.player2.anchor.setTo(0.5, 0.5);
         this.player2.scale.set(0.5, 0.5);
         game.physics.arcade.enable(this.player2);
         this.player2.body.collideWorldBounds = true;
+        this.player2.body.velocity.y =200;
+        this.player2.body.checkCollision.down = false;
+        // this.player2.body.immovable =true;
+        this.player2.body.bounce.setTo(1, 0);
         //coin group
         // changed coin group instead of random generating an endless array 
         // i made a group of 10 elements that loop
@@ -579,53 +684,85 @@ var multiState = {
         });
 
         //create anger 1 & 2
-        this.angerText = game.add.text(16, 100, 'Player1\'s Anger: 0', {
+        this.angerText = game.add.text(16, 50, 'Player1\'s Anger Bar', {
             fontSize: '32px',
             fill: '#000'
         });
-        this.angerText2 = game.add.text(1000, 100, 'Player2\'s Anger: 0', {
+        this.angerText2 = game.add.text(1000, 50, 'Player2\'s Anger Bar', {
             fontSize: '32px',
             fill: '#000'
         });
+
+        this.losebar = game.add.graphics(0, 0);
+        this.losebar.lineStyle(2, '0x000000');
+        this.losebar.beginFill('0x000000');
+        this.losebar.drawRoundedRect(1000, 100, 300, 27, 11);
+        this.losebar.endFill();
+
+        this.losebar2 = game.add.graphics(0, 0);
+        this.losebar2.lineStyle(2, '0x000000');
+        this.losebar2.beginFill('0x000000');
+        this.losebar2.drawRoundedRect(16, 100, 300, 27, 11);
+        this.losebar2.endFill();
 
         this.Jump = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
         this.soundTrack = game.add.audio('soundtrack');
         this.dogBarking = game.add.audio('dogbarking');
         game.sound.setDecodedCallback([this.soundTrack, this.dogBarking], this.StartSound, this);
-    },
 
-    //need some work here =============================<-----
-    progressbar_score: function () {
-        this.progress.clear();
-        this.progress = game.add.graphics(0, 0);
-        this.progress.lineStyle(2, '0x000000');
-        this.progress.beginFill('0x000000');
-        this.progress.drawRoundedRect(10, 50, 300, 27, 11);
-        this.progress.endFill();
 
-        if (this.score < 20)
-            this.progress.beginFill('0xFF0000', 1);
-        if (this.score <= 50 && this.score >= 20)
-            this.progress.beginFill('0xFFFF00', 1);
-        if (this.score > 50)
-            this.progress.beginFill('0x07E507', 1); //For drawing progress
-        if (this.score == 100) {
-
-        }
-
-        this.progress.drawRoundedRect(12, 51, this.score * 3, 25, 10);
     },
 
     update: function () {
-        this.liveimg = (this.coinGroup.children.filter(function (e) {
-            return e.alive
-        }).length) * 3;
-        this.progressbar_score();
+
         this.PowerUp();
         this.movePlayer();
         this.moveCoin();
         this.MoveOmHamada();
+        this.progressbar_lose();
+    },
+
+    progressbar_lose:function(){
+        //player 1
+        this.losebar.clear();
+        this.losebar.lineStyle(2, '0x000000');
+        this.losebar.beginFill('0xff0000', 1); //For drawing progress
+        this.losebar.drawRoundedRect(1052, 51, this.anger*2, 25, 10);
+        this.losebar.endFill();
+        //<<<<<<< HEAD
+        if(this.anger==5){
+            this.state.start('end');
+            this.lose=7;
+            this.losebar.clear();
+            // this.losebar = game.add.graphics(0, 0);
+            this.losebar.lineStyle(2, '0x000000');
+            this.losebar.beginFill('0x000000');
+            this.losebar.drawRoundedRect(1050, 50, 300, 27, 11);
+            this.losebar.endFill();
+
+        }
+
+
+        //player 2
+        this.losebar2.clear();
+        this.losebar2.lineStyle(2, '0x000000');
+        this.losebar2.beginFill('0xff0000', 1); //For drawing progress
+        this.losebar2.drawRoundedRect(16, 51, this.anger2*2, 25, 10);
+        this.losebar2.endFill();
+        //<<<<<<< HEAD
+        if(this.anger2==5){
+            this.state.start('end');
+            this.lose=7;
+            this.losebar2.clear();
+            // this.losebar = game.add.graphics(0, 0);
+            this.losebar2.lineStyle(2, '0x000000');
+            this.losebar2.beginFill('0x000000');
+            this.losebar2.drawRoundedRect(16, 50, 300, 27, 11);
+            this.losebar2.endFill();
+
+        }
+
     },
 
     StartSound: function () {
@@ -674,38 +811,52 @@ var multiState = {
         }
     },
 
-   movePlayer: function () {
-        this.player.x = game.input.mousePointer.x;
+    movePlayer: function () {
+
+        game.physics.arcade.collide(this.player, this.player2);
+       
+
+        //jumphandling for player1
+        if (this.Jump.isDown && this.jumpCounter == 0 &&this.player.body.y==573) {
+            this.player.body.velocity.y = -400;
+            this.jumpCounter++;
+        } else if (this.jumpCounter == 30) {
+            this.jumpCounter = 0;
+            this.player.body.velocity.y = 200;
+        } else if (this.jumpCounter != 0) {
+            this.jumpCounter++;
+        }
         cursor = game.input.keyboard.createCursorKeys();
 
+
+
+        //player1 movement
+        if (game.input.keyboard.isDown(Phaser.Keyboard.A)) {
+            this.player.body.velocity.x = -300;
+        } else if (game.input.keyboard.isDown(Phaser.Keyboard.D)) {
+            this.player.body.velocity.x = 300;
+        } else {
+            //this.player.body.velocity.x = 0;
+        }
         //player2 movement
         if (cursor.left.isDown) {
             this.player2.body.velocity.x = -300;
         } else if (cursor.right.isDown) {
             this.player2.body.velocity.x = 300;
         } else {
-            this.player2.body.velocity.x = 0;
+            //this.player2.body.velocity.x = 0;
         }
-        //jumphandling for player2
-        if (cursor.up.isDown && this.jumpCounter2 == 0) {
-            this.player2.body.velocity.y = -300;
+
+        //Jump handling for palayer2
+        if (game.input.keyboard.isDown(Phaser.Keyboard.UP) && this.jumpCounter2 == 0 &&this.player2.body.y==573  ) {
+            this.player2.body.velocity.y = -400;
             this.jumpCounter2++;
+
         } else if (this.jumpCounter2 == 30) {
             this.jumpCounter2 = 0;
             this.player2.body.velocity.y = 200;
         } else if (this.jumpCounter2 != 0) {
             this.jumpCounter2++;
-        }
-        //Jump handling for palayer1
-        if (this.Jump.isDown && this.jumpCounter == 0) {
-            this.player.body.velocity.y = -300;
-            this.jumpCounter++;
-
-        } else if (this.jumpCounter == 30) {
-            this.jumpCounter = 0;
-            this.player.body.velocity.y = 200;
-        } else if (this.jumpCounter != 0) {
-            this.jumpCounter++;
         }
         //game.physics.arcade.collide(this.player, this.coin);
         if (this.player.body.blocked.left)
@@ -729,7 +880,7 @@ var multiState = {
             this.dog.scale.setTo(-0.5, 0.5);
             this.dogBarking.play();
             this.anger2 += 1;
-            this.angerText2.text = 'Player2\'s Anger: ' + this.anger;
+            this.angerText2.text = 'Player2\'s Anger: ' + this.anger2;
         }
 
         if (this.player.body.x < 170 && this.player.body.x > 140 && this.dogCounter == 0 && this.GBoneTaken == false) {
@@ -746,11 +897,11 @@ var multiState = {
             this.dog.scale.setTo(0.5, 0.5);
             this.dogBarking.play();
             this.anger2 += 1;
-            this.angerText2.text = 'Player2\'s Anger: ' + this.anger;
+            this.angerText2.text = 'Player2\'s Anger: ' + this.anger2;
         }
         if (this.dogAppeared) {
             //check anger condition!!
-            if (this.anger === 5) {
+            if (this.anger === 5 ||this.anger2===5) {
                 this.soundTrack.stop();
                 this.state.start('end');
             }
@@ -763,6 +914,8 @@ var multiState = {
 
             }
         }
+        console.log(this.player2.body.y);
+
     },
 
 
@@ -796,24 +949,7 @@ var multiState = {
                 this.coinGroup.children[i].body.velocity.y = this.speed;
             }
 
-            if (this.coinGroup.children[i].body.y > 700) {
-                //  this.coinGroup.children[i].kill();
-                this.angerCounter += 1;
-                rand = Math.ceil(Math.random() * 1750) + 500;
-                this.coinGroup.children[i].x = rand;
-                this.coinGroup.children[i].y = 370;
-                this.speed = Math.ceil(Math.random() * 350) + 200;
-                this.coinGroup.children[i].body.velocity.y = this.speed;
-            }
 
-            if (this.coinGroup.children[i].body.y > 700) {
-                this.angerCounter2 += 1;
-                rand = Math.ceil(Math.random() * 1750) + 500;
-                this.coinGroup.children[i].x = rand;
-                this.coinGroup.children[i].y = 0;
-                this.speed = Math.ceil(Math.random() * 350) + 200;
-                this.coinGroup.children[i].body.velocity.y = this.speed;
-            }
         }
 
     },
