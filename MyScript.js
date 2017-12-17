@@ -944,10 +944,21 @@ var multiState = {
                 this.coinGroup.children[i].body.touching.down = false;
                 rand = Math.ceil(Math.random() * 1750) + 500;
                 this.coinGroup.children[i].x = rand;
-                this.coinGroup.children[i].y = 0;
+                this.coinGroup.children[i].y = 370;
                 this.speed = Math.ceil(Math.random() * 350) + 200;
                 this.coinGroup.children[i].body.velocity.y = this.speed;
             }
+            
+           if (this.coinGroup.children[i].body.y > 700) {
+                    //  this.coinGroup.children[i].kill();
+                   
+                    rand = Math.ceil(Math.random() * 1750) + 500;   
+                    this.coinGroup.children[i].x = rand;
+                    this.coinGroup.children[i].y = 370;
+                    this.speed = Math.ceil(Math.random() * 350) + 200;
+                    this.coinGroup.children[i].body.velocity.y = this.speed;
+                }
+
 
 
         }
